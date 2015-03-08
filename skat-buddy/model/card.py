@@ -23,4 +23,13 @@ class Card:
         self.face = face
 
     def __repr__(self):
-        return self.face[0] + " " + self.suit[0]
+        return self.face.name + " " + self.suit.name
+
+    def __eq__(self, other):
+        return self.suit is other.suit and self.face is other.face
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.suit, self.face))

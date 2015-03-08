@@ -25,8 +25,8 @@ class Game:
         return self.players[(self.dealer + 3) % len(self.players)]
 
     def create_deck(self):
-        for suit in Card.Suit.__members__.items():
-            for face in Card.Face.__members__.items():
+        for suit in Card.Suit:
+            for face in Card.Face:
                 self.card_deck.append(Card(suit, face))
 
     def start_new(self):
