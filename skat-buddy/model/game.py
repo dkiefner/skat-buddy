@@ -36,9 +36,8 @@ class Game:
         self.dealer = (self.dealer + 1) % len(self.players)
 
     def clear_cards(self):
-        del self.skat[:]
-        for player in self.players:
-            del player.cards[:]
+        self.skat.clear()
+        [player.cards.clear() for player in self.players]
 
     def give_out_cards(self):
         # give cards P1:3, P2:3, P3:3, S:2, P1:4, P2:4, P3:4, P1:3, P2:3, P3:3 --> skat alike
