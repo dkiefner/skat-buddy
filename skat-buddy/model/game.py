@@ -39,31 +39,20 @@ class Game:
         self.skat.clear()
         [player.cards.clear() for player in self.players]
 
+    # give cards P1:3, P2:3, P3:3, S:2, P1:4, P2:4, P3:4, P1:3, P2:3, P3:3 --> skat alike
     def give_out_cards(self):
-        # give cards P1:3, P2:3, P3:3, S:2, P1:4, P2:4, P3:4, P1:3, P2:3, P3:3 --> skat alike
-        # P1 gets: 1, 2, 3, 12, 13, 14, 15, 24, 25, 26
-        # P2 gets: 4, 5, 6, 16, 17, 18, 19, 27, 28, 29
-        # P3 gets: 7, 8, 9, 20, 21, 22, 23, 30, 31, 32
-        # Skat gets 10, 11
-        round1 = (0, 2)
-        round2 = (11, 14)
-        round3 = (23, 25)
-        for idx, card in enumerate(self.card_deck):
-            # Player 1
-            if (round1[0] <= idx <= round1[1]) \
-                    or (round2[0] <= idx <= round2[1]) \
-                    or (round3[0] <= idx <= round3[1]):
-                self.players[0].cards.append(card)
-            # Player 2
-            elif (round1[0] + 3 <= idx <= round1[1] + 3) \
-                    or (round2[0] + 4 <= idx <= round2[1] + 4) \
-                    or (round3[0] + 3 <= idx <= round3[1] + 3):
-                self.players[1].cards.append(card)
-            # Player 3
-            elif (round1[0] + 6 <= idx <= round1[1] + 6) \
-                    or (round2[0] + 8 <= idx <= round2[1] + 8) \
-                    or (round3[0] + 6 <= idx <= round3[1] + 6):
-                self.players[2].cards.append(card)
-            # Skat
-            else:
-                self.skat.append(card)
+        # round 1
+        self.players[0].cards.append(self.card_deck[:3])
+        self.players[1].cards.append(self.card_deck[3:6])
+        self.players[2].cards.append(self.card_deck[6:9])
+        self.skat.append(self.card_deck[9:11])
+
+        # round 2
+        self.players[0].cards.append(self.card_deck[11:15])
+        self.players[1].cards.append(self.card_deck[15:19])
+        self.players[2].cards.append(self.card_deck[19:23])
+
+        # round 3
+        self.players[0].cards.append(self.card_deck[23:26])
+        self.players[1].cards.append(self.card_deck[26:29])
+        self.players[2].cards.append(self.card_deck[29:32])
