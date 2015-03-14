@@ -18,6 +18,20 @@ class Card:
         LEAVES = 2
         ACORNS = 3
 
+    def get_value(self):
+        if self.face is Card.Face.JACK:
+            return 2
+        elif self.face is Card.Face.ACE:
+            return 11
+        elif self.face is Card.Face.TEN:
+            return 10
+        elif self.face is Card.Face.KING:
+            return 4
+        elif self.face is Card.Face.QUEEN:
+            return 3
+        else:
+            return 0
+
     def __init__(self, suit, face):
         self.suit = suit
         self.face = face
