@@ -23,7 +23,7 @@ class GameStateStart(GameState):
         [player.cards.clear() for player in self.game.players]
 
     def handle_action(self, action):
-        if action is StartGameAction:
+        if isinstance(action, StartGameAction):
             # shuffle card deck
             shuffle(self.game.card_deck)
 

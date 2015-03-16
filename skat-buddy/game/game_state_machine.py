@@ -28,7 +28,8 @@ class GameState(metaclass=ABCMeta):
         raise NotImplementedError()
 
     def handle_action(self, action):
-        raise NotImplementedError("Action " + action.__class__.__name__ + " is not implemented")
+        raise NotImplementedError(
+            "Action " + action.__class__.__name__ + " is not implemented for state " + self.__class__.__name__)
 
     def handle_state_finished(self):
         self.state_finished_handler()
