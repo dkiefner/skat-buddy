@@ -1,4 +1,4 @@
-from model.game import Game
+from game.game import Game
 from model.player import Player
 
 

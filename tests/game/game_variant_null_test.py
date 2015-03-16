@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from model.game_variant import GameVariantNull
+from game.game_variant import GameVariantNull
 from model.card import Card
 
 

@@ -1,84 +1,35 @@
 from unittest import TestCase
 
-from model.game import Game
+from game.game_state_machine import GameStateMachine
+from game.state.game_state_start import GameStateStart
+from game.game import Game
 from model.player import Player
 from model.card import Card
 
 
+# TODO handle_action#StartGameAction
 class GameWithThreePlayerTest(TestCase):
     def setUp(self):
         self.game = Game([Player("P1"), Player("P2"), Player("P3")])
-
-    def test_createDeck_correctSize(self):
-        # then
-        self.assertEquals(len(self.game.card_deck), 32)
-
-    def test_createDeck_containsAllCards(self):
-        # then
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.SEVEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.EIGHT) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.NINE) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.TEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.JACK) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.QUEEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.KING) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.ACE) in self.game.card_deck)
-
-        self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.SEVEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.EIGHT) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.NINE) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.TEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.JACK) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.QUEEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.KING) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.ACE) in self.game.card_deck)
-
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.SEVEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.EIGHT) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.NINE) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.TEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.JACK) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.QUEEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.KING) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.ACE) in self.game.card_deck)
-
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.SEVEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.EIGHT) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.NINE) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.TEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.JACK) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.QUEEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.KING) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.ACE) in self.game.card_deck)
-
-    def test_createDeck_noDuplicateCards(self):
-        # given
-        card_counter = {}
-
-        for card in self.game.card_deck:
-            count = card_counter.get(card, 0)
-            card_counter[card] = count + 1
-
-        # then
-        for card, count in card_counter.items():
-            self.assertEquals(count, 1)
+        self.state = GameStateStart(self.game)
+        self.state_machine = GameStateMachine(self.state)
 
     def test_clearCards(self):
         # given
-        self.game.skat.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        [player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN)) for player in self.game.players]
+        self.state.give_out_cards()
 
         # when
-        self.game.clear_cards()
+        self.state.clear_cards()
 
         # then
         self.assertEquals(len(self.game.skat), 0)
-        for player in self.game.players:
-            self.assertEquals(len(player.cards), 0)
+        self.assertEquals(len(self.game.players[0].cards), 0)
+        self.assertEquals(len(self.game.players[1].cards), 0)
+        self.assertEquals(len(self.game.players[2].cards), 0)
 
     def test_giveOutCards(self):
         # when
-        self.game.give_out_cards()
+        self.state.give_out_cards()
 
         # then
         # round 1
@@ -126,51 +77,39 @@ class GameWithThreePlayerTest(TestCase):
         self.assertEquals(self.game.players[2].cards[8], Card(Card.Suit.ACORNS, Card.Face.KING))
         self.assertEquals(self.game.players[2].cards[9], Card(Card.Suit.ACORNS, Card.Face.ACE))
 
-    def test_startNew(self):
-        # when
-        self.game.start_new()
-
+    def test_setUp(self):
         # then
-        # TODO test that players old cards are cleared
-        # TODO test that deck was shuffled
-        # TODO test for give out cards
         self.assertEquals(self.game.dealer, 0)
         self.assertEquals(self.game.get_dealer(), self.game.players[0])
 
-    def test_startNew_shiftDealerOneTime(self):
+    def test_setUp_shiftDealerOneTime(self):
         # when
-        self.game.start_new()
-        self.game.start_new()
+        self.state.set_up()
 
         # then
         self.assertEquals(self.game.dealer, 1)
         self.assertEquals(self.game.get_dealer(), self.game.players[1])
 
-    def test_startNew_shiftDealerTwoTimes(self):
+    def test_setUp_shiftDealerTwoTimes(self):
         # when
-        self.game.start_new()
-        self.game.start_new()
-        self.game.start_new()
+        self.state.set_up()
+        self.state.set_up()
 
         # then
         self.assertEquals(self.game.dealer, 2)
         self.assertEquals(self.game.get_dealer(), self.game.players[2])
 
-    def test_startNew_shiftDealerThreeTimes(self):
+    def test_setUp_shiftDealerThreeTimes(self):
         # when
-        self.game.start_new()
-        self.game.start_new()
-        self.game.start_new()
-        self.game.start_new()
+        self.state.set_up()
+        self.state.set_up()
+        self.state.set_up()
 
         # then
         self.assertEquals(self.game.dealer, 0)
         self.assertEquals(self.game.get_dealer(), self.game.players[0])
 
     def test_seatsAndDealerPositions_firstRound(self):
-        # when
-        self.game.start_new()
-
         # then
         self.assertEquals(self.game.players[0], self.game.get_dealer())
         self.assertEquals(self.game.players[0], self.game.get_third_seat())
@@ -179,8 +118,7 @@ class GameWithThreePlayerTest(TestCase):
 
     def test_seatsAndDealerPositions_secondRound(self):
         # when
-        self.game.start_new()
-        self.game.start_new()
+        self.state.set_up()
 
         # then
         self.assertEquals(self.game.players[1], self.game.get_dealer())
@@ -190,9 +128,8 @@ class GameWithThreePlayerTest(TestCase):
 
     def test_seatsAndDealerPositions_thirdRound(self):
         # when
-        self.game.start_new()
-        self.game.start_new()
-        self.game.start_new()
+        self.state.set_up()
+        self.state.set_up()
 
         # then
         self.assertEquals(self.game.players[2], self.game.get_dealer())
@@ -202,10 +139,9 @@ class GameWithThreePlayerTest(TestCase):
 
     def test_seatsAndDealerPositions_fourthRound(self):
         # when
-        self.game.start_new()
-        self.game.start_new()
-        self.game.start_new()
-        self.game.start_new()
+        self.state.set_up()
+        self.state.set_up()
+        self.state.set_up()
 
         # then
         self.assertEquals(self.game.players[0], self.game.get_dealer())

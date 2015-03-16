@@ -1,23 +1,26 @@
 from unittest import TestCase
 
-from model.game_variant import GameVariantGrand
+from game.game_variant import GameVariantSuit
 from model.card import Card
 
 
-class GameVariantGrandTest(TestCase):
+class GameVariantSuitTest(TestCase):
     def setUp(self):
-        self.game_variant = GameVariantGrand()
+        self.game_variant = GameVariantSuit(Card.Suit.ACORNS)
 
-    def test_isTrump_jacksTrue(self):
+    def test_isTrump_TrumpTrue(self):
         # when/then
         for suit in Card.Suit:
             self.assertTrue(self.game_variant.is_trump(Card(suit, Card.Face.JACK)))
 
-    def test_isTrump_nonJacksFalse(self):
+        for face in Card.Face:
+            self.assertTrue(self.game_variant.is_trump(Card(Card.Suit.ACORNS, face)))
+
+    def test_isTrump_nonTrumpFalse(self):
         # when/then
         for suit in Card.Suit:
             for face in Card.Face:
-                if face is Card.Face.JACK:
+                if face is Card.Face.JACK or suit is Card.Suit.ACORNS:
                     continue
                 else:
                     self.assertFalse(self.game_variant.is_trump(Card(suit, face)))
@@ -76,20 +79,47 @@ class GameVariantGrandTest(TestCase):
         self.assertEquals(self.game_variant.compare_jacks(hearts_jack, leaves_jack), -1)
         self.assertEquals(self.game_variant.compare_jacks(leaves_jack, acorns_jack), -1)
 
+    def test_compareCards_oneTrump(self):
+        # given
+        acorns_seven = Card(Card.Suit.ACORNS, Card.Face.SEVEN)
+        bell_seven = Card(Card.Suit.BELLS, Card.Face.SEVEN)
+        bell_eight = Card(Card.Suit.BELLS, Card.Face.EIGHT)
+
+        # when/then
+        self.assertEquals(self.game_variant.compare_cards(acorns_seven, bell_seven), 1)
+        self.assertEquals(self.game_variant.compare_cards(acorns_seven, bell_eight), 1)
+        self.assertEquals(self.game_variant.compare_cards(bell_seven, acorns_seven), -1)
+        self.assertEquals(self.game_variant.compare_cards(bell_eight, acorns_seven), -1)
+
+    def test_compareCards_jackAndTrump(self):
+        # given
+        acorns_seven = Card(Card.Suit.ACORNS, Card.Face.SEVEN)
+        acorns_ace = Card(Card.Suit.ACORNS, Card.Face.ACE)
+        bells_jack = Card(Card.Suit.BELLS, Card.Face.JACK)
+        acorns_jack = Card(Card.Suit.ACORNS, Card.Face.JACK)
+
+        # when/then
+        self.assertEquals(self.game_variant.compare_cards(bells_jack, acorns_seven), 1)
+        self.assertEquals(self.game_variant.compare_cards(acorns_jack, acorns_seven), 1)
+        self.assertEquals(self.game_variant.compare_cards(acorns_jack, acorns_ace), 1)
+        self.assertEquals(self.game_variant.compare_cards(acorns_seven, bells_jack), -1)
+        self.assertEquals(self.game_variant.compare_cards(acorns_seven, acorns_jack), -1)
+        self.assertEquals(self.game_variant.compare_cards(acorns_ace, acorns_jack), -1)
+
     def test_compareCards_oneJack(self):
         # given
         bells_jack = Card(Card.Suit.BELLS, Card.Face.JACK)
         leaves_jack = Card(Card.Suit.LEAVES, Card.Face.JACK)
         bells_eight = Card(Card.Suit.BELLS, Card.Face.EIGHT)
-        acorns_ace = Card(Card.Suit.ACORNS, Card.Face.ACE)
+        leaves_ace = Card(Card.Suit.LEAVES, Card.Face.ACE)
 
         # when/then
         self.assertEquals(self.game_variant.compare_cards(bells_jack, bells_eight), 1)
         self.assertEquals(self.game_variant.compare_cards(leaves_jack, bells_eight), 1)
-        self.assertEquals(self.game_variant.compare_cards(bells_jack, acorns_ace), 1)
+        self.assertEquals(self.game_variant.compare_cards(bells_jack, leaves_ace), 1)
         self.assertEquals(self.game_variant.compare_cards(bells_eight, bells_jack), -1)
         self.assertEquals(self.game_variant.compare_cards(bells_eight, leaves_jack), -1)
-        self.assertEquals(self.game_variant.compare_cards(acorns_ace, bells_jack), -1)
+        self.assertEquals(self.game_variant.compare_cards(leaves_ace, bells_jack), -1)
 
     def test_compareCards_sameFace(self):
         # given
@@ -108,7 +138,7 @@ class GameVariantGrandTest(TestCase):
         bells_jack = Card(Card.Suit.BELLS, Card.Face.JACK)
         bells_king = Card(Card.Suit.BELLS, Card.Face.KING)
         bells_ace = Card(Card.Suit.BELLS, Card.Face.ACE)
-        acorns_ace = Card(Card.Suit.ACORNS, Card.Face.ACE)
+        leaves_ace = Card(Card.Suit.LEAVES, Card.Face.ACE)
 
         # when/then
         self.assertEquals(self.game_variant.compare_cards(leaves_ten, bells_ten), 0)
@@ -116,14 +146,14 @@ class GameVariantGrandTest(TestCase):
         self.assertEquals(self.game_variant.compare_cards(bells_nine, bells_ten), -1)
         self.assertEquals(self.game_variant.compare_cards(bells_king, bells_ten), -1)
         self.assertEquals(self.game_variant.compare_cards(bells_ace, bells_ten), 1)
-        self.assertEquals(self.game_variant.compare_cards(acorns_ace, bells_ten), 0)
+        self.assertEquals(self.game_variant.compare_cards(leaves_ace, bells_ten), 0)
 
         self.assertEquals(self.game_variant.compare_cards(bells_ten, leaves_ten), 0)
         self.assertEquals(self.game_variant.compare_cards(bells_ten, bells_jack), -1)
         self.assertEquals(self.game_variant.compare_cards(bells_ten, bells_nine), 1)
         self.assertEquals(self.game_variant.compare_cards(bells_ten, bells_king), 1)
         self.assertEquals(self.game_variant.compare_cards(bells_ten, bells_ace), -1)
-        self.assertEquals(self.game_variant.compare_cards(bells_ten, acorns_ace), 0)
+        self.assertEquals(self.game_variant.compare_cards(bells_ten, leaves_ace), 0)
 
     def test_compareCards_sameSuit(self):
         # given
@@ -190,8 +220,28 @@ class GameVariantGrandTest(TestCase):
         # given
         bells_jack = Card(Card.Suit.BELLS, Card.Face.JACK)
         bells_king = Card(Card.Suit.BELLS, Card.Face.KING)
+        leaves_ace = Card(Card.Suit.LEAVES, Card.Face.ACE)
+
+        # when/then
+        result = self.game_variant.get_highest_card([bells_king, leaves_ace, bells_jack])
+        self.assertEquals(Card(Card.Suit.BELLS, Card.Face.JACK), result)
+
+    def test_getHighestCard_jackAndTrump(self):
+        # given
+        bells_jack = Card(Card.Suit.BELLS, Card.Face.JACK)
+        bells_king = Card(Card.Suit.BELLS, Card.Face.KING)
         acorn_ace = Card(Card.Suit.ACORNS, Card.Face.ACE)
 
         # when/then
         result = self.game_variant.get_highest_card([bells_king, acorn_ace, bells_jack])
         self.assertEquals(Card(Card.Suit.BELLS, Card.Face.JACK), result)
+
+    def test_getHighestCard_TrumpAndSuit(self):
+        # given
+        bells_ace = Card(Card.Suit.BELLS, Card.Face.ACE)
+        bells_king = Card(Card.Suit.BELLS, Card.Face.KING)
+        acorn_seven = Card(Card.Suit.ACORNS, Card.Face.SEVEN)
+
+        # when/then
+        result = self.game_variant.get_highest_card([bells_king, acorn_seven, bells_ace])
+        self.assertEquals(Card(Card.Suit.ACORNS, Card.Face.SEVEN), result)
