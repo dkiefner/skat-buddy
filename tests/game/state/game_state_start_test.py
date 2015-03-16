@@ -1,13 +1,13 @@
 from unittest import TestCase
 
 from game.game_state_machine import GameStateMachine
-from game.state.game_state_start import GameStateStart
+from game.state.game_state_bidding import GameStateBidding
+from game.state.game_state_start import GameStateStart, StartGameAction
 from game.game import Game
 from model.player import Player
 from model.card import Card
 
 
-# TODO handle_action#StartGameAction
 class GameWithThreePlayerTest(TestCase):
     def setUp(self):
         self.game = Game([Player("P1"), Player("P2"), Player("P3")])
@@ -148,3 +148,17 @@ class GameWithThreePlayerTest(TestCase):
         self.assertEquals(self.game.players[0], self.game.get_third_seat())
         self.assertEquals(self.game.players[1], self.game.get_first_seat())
         self.assertEquals(self.game.players[2], self.game.get_second_seat())
+
+    def test_handleAction_startGame(self):
+        # given
+        self.state.clear_cards()
+
+        # when
+        self.state.handle_action(StartGameAction())
+
+        # then
+        self.assertTrue(len(self.game.skat) > 0)
+        self.assertTrue(len(self.game.players[0].cards) > 0)
+        self.assertTrue(len(self.game.players[1].cards) > 0)
+        self.assertTrue(len(self.game.players[2].cards) > 0)
+        self.assertTrue(isinstance(self.state_machine.currentState, GameStateBidding))
