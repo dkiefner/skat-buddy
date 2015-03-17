@@ -13,6 +13,7 @@ from model.player import Player
 class GameStateBid(GameState):
     def __init__(self, game):
         super().__init__(game)
+        self.passed_players = list()
 
     def handle_action(self, action):
         if isinstance(action, BidCallAction):
@@ -20,7 +21,7 @@ class GameStateBid(GameState):
         elif isinstance(action, BidAcceptAction):
             self.bid_accept(action.player, action.value)
         elif isinstance(action, BidPassAction):
-            self.bid_pass(action.player, action.value)
+            self.bid_pass(action.player)
         elif isinstance(action, PickUpSkatAction):
             self.pick_up_skat(action.player)
         elif isinstance(action, PutDownSkatAction):
@@ -31,13 +32,24 @@ class GameStateBid(GameState):
             super().handle_action(action)
 
     def bid_call(self, player, value):
+        if player in self.passed_players:
+            raise InvalidPlayerMove("Player " + player.name + " has already passed")
         pass  # TODO BidCallAction
 
     def bid_accept(self, player, value):
+        if player in self.passed_players:
+            raise InvalidPlayerMove("Player " + player.name + " has already passed")
         pass  # TODO BidAcceptAction
 
-    def bid_pass(self, player, value):
-        pass  # TODO BidPassAction, set declarer and defender
+    def bid_pass(self, player):
+        if player in self.passed_players:
+            raise InvalidPlayerMove("Player " + player.name + " has already passed")
+
+        player.type = Player.Type.DEFENDER
+        self.passed_players.append(player)
+
+        if len(self.passed_players) is 2:
+
 
     def pick_up_skat(self, player):
         if player.type is not Player.Type.DECLARER:
