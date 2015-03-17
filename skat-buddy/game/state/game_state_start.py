@@ -1,7 +1,7 @@
 from random import shuffle
 
 from game.game_state_machine import GameState, GameAction
-from game.state.game_state_bidding import GameStateBidding
+from game.state.game_state_bid import GameStateBid
 
 
 # ------------------------------------------------------------
@@ -13,14 +13,10 @@ class GameStateStart(GameState):
         self.set_up()
 
     def set_up(self):
-        # clear all given cards
-        self.clear_cards()
+        # reset most game values
+        self.game.reset()
         # set the next dealer
         self.game.dealer = (self.game.dealer + 1) % len(self.game.players)
-
-    def clear_cards(self):
-        self.game.skat.clear()
-        [player.cards.clear() for player in self.game.players]
 
     def handle_action(self, action):
         if isinstance(action, StartGameAction):
@@ -54,11 +50,11 @@ class GameStateStart(GameState):
         self.game.players[2].cards.extend(self.game.card_deck[29:32])
 
     def get_next_state(self):
-        return GameStateBidding(self.game)
+        return GameStateBid(self.game)
 
 
 # ------------------------------------------------------------
-# Concrete start game action class
+# Concrete action classes
 # ------------------------------------------------------------
 class StartGameAction(GameAction):
     pass

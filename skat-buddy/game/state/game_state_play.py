@@ -6,9 +6,8 @@ from game.state.game_state_end import GameStateEnd
 # Concrete game state class for playing the game
 # ------------------------------------------------------------
 class GameStatePlay(GameState):
-    def __init__(self, game, game_variant):
+    def __init__(self, game):
         super().__init__(game)
-        self.game_variant = game_variant
 
         # TODO init
         self.handle_state_finished()

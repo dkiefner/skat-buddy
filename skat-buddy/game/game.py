@@ -7,6 +7,8 @@ class Game:
         self.card_deck = list()
         self.skat = list()
         self.dealer = -1
+        self.bid_value = -1
+        self.game_variant = None
 
         self.create_deck()
 
@@ -26,3 +28,15 @@ class Game:
         for suit in Card.Suit:
             for face in Card.Face:
                 self.card_deck.append(Card(suit, face))
+
+    def clear_cards(self):
+        self.skat.clear()
+        [player.cards.clear() for player in self.players]
+
+    def reset(self, with_dealer=False):
+        self.clear_cards()
+        self.bid_value = -1
+        self.game_variant = None
+
+        if with_dealer:
+            self.dealer = -1

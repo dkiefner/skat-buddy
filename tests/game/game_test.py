@@ -62,3 +62,69 @@ class GameWithThreePlayerTest(TestCase):
         # then
         for card, count in card_counter.items():
             self.assertEquals(count, 1)
+
+    def test_clearCards(self):
+        # given
+        self.game.skat.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
+        self.game.players[0].cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        self.game.players[1].cards.append(Card(Card.Suit.BELLS, Card.Face.NINE))
+        self.game.players[2].cards.append(Card(Card.Suit.BELLS, Card.Face.TEN))
+
+        # when
+        self.game.clear_cards()
+
+        # then
+        self.assertEquals(len(self.game.skat), 0)
+        self.assertEquals(len(self.game.players[0].cards), 0)
+        self.assertEquals(len(self.game.players[1].cards), 0)
+        self.assertEquals(len(self.game.players[2].cards), 0)
+
+    def test_reset_withoutDealer(self):
+        # given
+        self.game.bid_value = 24
+        self.game.dealer = 2
+        self.game.skat.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
+        self.game.players[0].cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        self.game.players[1].cards.append(Card(Card.Suit.BELLS, Card.Face.NINE))
+        self.game.players[2].cards.append(Card(Card.Suit.BELLS, Card.Face.TEN))
+
+        # when
+        self.game.reset()
+
+        # then
+        # clear cards had to be called
+        self.assertEquals(len(self.game.skat), 0)
+        self.assertEquals(len(self.game.players[0].cards), 0)
+        self.assertEquals(len(self.game.players[1].cards), 0)
+        self.assertEquals(len(self.game.players[2].cards), 0)
+        # reset bid value
+        self.assertEquals(self.game.bid_value, -1)
+        # reset game variant
+        self.assertEquals(self.game.game_variant, None)
+        # untouched dealer
+        self.assertEquals(self.game.dealer, 2)
+
+    def test_reset_witDealer(self):
+        # given
+        self.game.bid_value = 24
+        self.game.dealer = 2
+        self.game.skat.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
+        self.game.players[0].cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        self.game.players[1].cards.append(Card(Card.Suit.BELLS, Card.Face.NINE))
+        self.game.players[2].cards.append(Card(Card.Suit.BELLS, Card.Face.TEN))
+
+        # when
+        self.game.reset(True)
+
+        # then
+        # cleared cards
+        self.assertEquals(len(self.game.skat), 0)
+        self.assertEquals(len(self.game.players[0].cards), 0)
+        self.assertEquals(len(self.game.players[1].cards), 0)
+        self.assertEquals(len(self.game.players[2].cards), 0)
+        # reset bid value
+        self.assertEquals(self.game.bid_value, -1)
+        # reset game variant
+        self.assertEquals(self.game.game_variant, None)
+        # reset dealer
+        self.assertEquals(self.game.dealer, -1)

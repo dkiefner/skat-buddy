@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from game.game_state_machine import GameStateMachine
-from game.state.game_state_bidding import GameStateBidding
+from game.state.game_state_bid import GameStateBid
 from game.state.game_state_start import GameStateStart, StartGameAction
 from game.game import Game
 from model.player import Player
@@ -13,19 +13,6 @@ class GameWithThreePlayerTest(TestCase):
         self.game = Game([Player("P1"), Player("P2"), Player("P3")])
         self.state = GameStateStart(self.game)
         self.state_machine = GameStateMachine(self.state)
-
-    def test_clearCards(self):
-        # given
-        self.state.give_out_cards()
-
-        # when
-        self.state.clear_cards()
-
-        # then
-        self.assertEquals(len(self.game.skat), 0)
-        self.assertEquals(len(self.game.players[0].cards), 0)
-        self.assertEquals(len(self.game.players[1].cards), 0)
-        self.assertEquals(len(self.game.players[2].cards), 0)
 
     def test_giveOutCards(self):
         # when
@@ -151,7 +138,7 @@ class GameWithThreePlayerTest(TestCase):
 
     def test_handleAction_startGame(self):
         # given
-        self.state.clear_cards()
+        self.game.reset()
 
         # when
         self.state.handle_action(StartGameAction())
@@ -161,4 +148,4 @@ class GameWithThreePlayerTest(TestCase):
         self.assertTrue(len(self.game.players[0].cards) > 0)
         self.assertTrue(len(self.game.players[1].cards) > 0)
         self.assertTrue(len(self.game.players[2].cards) > 0)
-        self.assertTrue(isinstance(self.state_machine.currentState, GameStateBidding))
+        self.assertTrue(isinstance(self.state_machine.currentState, GameStateBid))
