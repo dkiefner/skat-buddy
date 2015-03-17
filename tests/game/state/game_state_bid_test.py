@@ -1,5 +1,5 @@
 from unittest import TestCase
-from exceptions import InvalidCardSize
+from exceptions import InvalidCardSize, InvalidPlayerMove
 
 from game.game_state_machine import GameStateMachine
 from game.game_variant import GameVariantGrand
@@ -19,6 +19,7 @@ class GameWithThreePlayerTest(TestCase):
     def test_pickUpSkat(self):
         # given
         player = self.game.players[0]
+        player.type = Player.Type.DECLARER
         player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
         player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
         skat = self.game.skat
@@ -34,9 +35,23 @@ class GameWithThreePlayerTest(TestCase):
         self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.SEVEN) in player.cards)
         self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.EIGHT) in player.cards)
 
+    def test_pickUpSkat_notDeclarerFails(self):
+        # given
+        player = self.game.players[0]
+        player.type = Player.Type.DEFENDER
+        player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
+        player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        skat = self.game.skat
+        skat.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
+        skat.append(Card(Card.Suit.HEARTS, Card.Face.EIGHT))
+
+        # when/then
+        self.assertRaises(InvalidPlayerMove, self.state.pick_up_skat, player)
+
     def test_putDownSkat(self):
         # given
         player = self.game.players[0]
+        player.type = Player.Type.DECLARER
         player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
         player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
@@ -59,6 +74,7 @@ class GameWithThreePlayerTest(TestCase):
     def test_putDownSkat_lessThanTwoFails(self):
         # given
         player = self.game.players[0]
+        player.type = Player.Type.DECLARER
         player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
         player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
@@ -72,6 +88,7 @@ class GameWithThreePlayerTest(TestCase):
     def test_putDownSkat_moreThanTwoFails(self):
         # given
         player = self.game.players[0]
+        player.type = Player.Type.DECLARER
         player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
         player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
@@ -84,9 +101,25 @@ class GameWithThreePlayerTest(TestCase):
         # when/then
         self.assertRaises(InvalidCardSize, self.state.put_down_skat, player, cards_to_put)
 
+    def test_putDownSkat_notDeclarerFails(self):
+        # given
+        player = self.game.players[0]
+        player.type = Player.Type.DEFENDER
+        player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
+        player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        player.cards.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
+        player.cards.append(Card(Card.Suit.HEARTS, Card.Face.EIGHT))
+        cards_to_put = list()
+        cards_to_put.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
+        cards_to_put.append(Card(Card.Suit.HEARTS, Card.Face.EIGHT))
+
+        # when/then
+        self.assertRaises(InvalidPlayerMove, self.state.put_down_skat, player, cards_to_put)
+
     def test_declareGame(self):
         # given
         player = self.game.players[0]
+        player.type = Player.Type.DECLARER
         game_variant = GameVariantGrand()
 
         # when
@@ -95,3 +128,12 @@ class GameWithThreePlayerTest(TestCase):
         # then
         self.assertEquals(self.game.game_variant, game_variant)
         self.assertTrue(isinstance(self.state_machine.currentState, GameStatePlay))
+
+    def test_declareGame_notDeclarerFails(self):
+        # given
+        player = self.game.players[0]
+        player.type = Player.Type.DEFENDER
+        game_variant = GameVariantGrand()
+
+        # when/then
+        self.assertRaises(InvalidPlayerMove, self.state.declare_game, player, game_variant)
