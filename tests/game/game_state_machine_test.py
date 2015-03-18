@@ -61,7 +61,7 @@ class GameStateMachineTest(TestCase):
         self.state_machine.handle_action(TransitionToBAction())
 
         # then
-        self.assertTrue(isinstance(self.state_machine.currentState, GameStateB))
+        self.assertTrue(isinstance(self.state_machine.current_state, GameStateB))
 
     def test_handleAction_twoTimes(self):
         # when
@@ -69,7 +69,7 @@ class GameStateMachineTest(TestCase):
         self.state_machine.handle_action(TransitionToCAction())
 
         # then
-        self.assertTrue(isinstance(self.state_machine.currentState, GameStateC))
+        self.assertTrue(isinstance(self.state_machine.current_state, GameStateC))
 
     def test_handleAction_threeTimes(self):
         # when
@@ -78,7 +78,7 @@ class GameStateMachineTest(TestCase):
         self.state_machine.handle_action(TransitionToAAction())
 
         # then
-        self.assertTrue(isinstance(self.state_machine.currentState, GameStateA))
+        self.assertTrue(isinstance(self.state_machine.current_state, GameStateA))
 
     def test_handleAction_withNotImplementedActionFails(self):
         # when/then

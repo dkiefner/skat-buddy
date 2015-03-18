@@ -87,6 +87,7 @@ class GameWithThreePlayerTest(TestCase):
         self.game.players[0].cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
         self.game.players[1].cards.append(Card(Card.Suit.BELLS, Card.Face.NINE))
         self.game.players[2].cards.append(Card(Card.Suit.BELLS, Card.Face.TEN))
+        self.game.passed_bid_players.append(self.game.players[0])
 
         # when
         self.game.reset()
@@ -101,6 +102,8 @@ class GameWithThreePlayerTest(TestCase):
         self.assertEquals(self.game.bid_value, -1)
         # reset game variant
         self.assertEquals(self.game.game_variant, None)
+        # reset passed bid player list
+        self.assertEquals(len(self.game.passed_bid_players), 0)
         # untouched dealer
         self.assertEquals(self.game.dealer, 2)
 

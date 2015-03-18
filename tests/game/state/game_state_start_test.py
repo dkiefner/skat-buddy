@@ -148,4 +148,4 @@ class GameWithThreePlayerTest(TestCase):
         self.assertTrue(len(self.game.players[0].cards) > 0)
         self.assertTrue(len(self.game.players[1].cards) > 0)
         self.assertTrue(len(self.game.players[2].cards) > 0)
-        self.assertTrue(isinstance(self.state_machine.currentState, GameStateBid))
+        self.assertTrue(isinstance(self.state_machine.current_state, GameStateBid))

@@ -9,6 +9,7 @@ class Game:
         self.dealer = -1
         self.bid_value = -1
         self.game_variant = None
+        self.passed_bid_players = list()
 
         self.create_deck()
 
@@ -37,6 +38,7 @@ class Game:
         self.clear_cards()
         self.bid_value = -1
         self.game_variant = None
+        self.passed_bid_players.clear()
 
         if with_dealer:
             self.dealer = -1

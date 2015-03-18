@@ -3,14 +3,16 @@ from exceptions import InvalidCardSize, InvalidPlayerMove
 
 from game.game_state_machine import GameStateMachine
 from game.game_variant import GameVariantGrand
-from game.state.game_state_bid import GameStateBid
+from game.state.game_state_bid import GameStateBid, BidStateCallTurn, BidCallAction, BidStateResponseTurn, \
+    BidAcceptAction, BidPassAction, BidStateEnd
 from game.game import Game
 from game.state.game_state_play import GameStatePlay
 from model.player import Player
 from model.card import Card
 
 
-class GameWithThreePlayerTest(TestCase):
+# TODO check for correct action delegation with substates
+class GameStateBidTest(TestCase):
     def setUp(self):
         self.game = Game([Player("P1"), Player("P2"), Player("P3")])
         self.state = GameStateBid(self.game)
@@ -127,7 +129,7 @@ class GameWithThreePlayerTest(TestCase):
 
         # then
         self.assertEquals(self.game.game_variant, game_variant)
-        self.assertTrue(isinstance(self.state_machine.currentState, GameStatePlay))
+        self.assertTrue(isinstance(self.state_machine.current_state, GameStatePlay))
 
     def test_declareGame_notDeclarerFails(self):
         # given
@@ -137,3 +139,174 @@ class GameWithThreePlayerTest(TestCase):
 
         # when/then
         self.assertRaises(InvalidPlayerMove, self.state.declare_game, player, game_variant)
+
+    def test_bidPass(self):
+        # given
+        player = self.game.players[0]
+
+        # when
+        self.state.bid_pass(self.game, player)
+
+        # then
+        self.assertEquals(player.type, Player.Type.DEFENDER)
+        self.assertTrue(player in self.game.passed_bid_players)
+
+    def test_bidPass_playerAlreadyPassedFails(self):
+        # given
+        player = self.game.players[0]
+        self.game.passed_bid_players.append(player)
+
+        # when/then
+        self.assertRaises(InvalidPlayerMove, self.state.bid_pass, self.game, player)
+
+    def test_checkPlayerHasPassed(self):
+        # given
+        player = self.game.players[0]
+
+        # when
+        self.state.check_player_has_passed(self.game, player)
+
+        # then nothing happens
+
+    def test_checkPlayerHasPassed_Fails(self):
+        # given
+        player = self.game.players[0]
+        self.game.passed_bid_players.append(player)
+
+        # when/then
+        self.assertRaises(InvalidPlayerMove, self.state.check_player_has_passed, self.game, player)
+
+
+class BidResponseAction(object):
+    pass
+
+
+class BidStateCallTurnTest(TestCase):
+    def setUp(self):
+        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.state = GameStateBid(self.game)
+        self.state_machine = GameStateMachine(self.state)
+
+    def test_transitionFromCallTurnToResponseTurn(self):
+        # given
+        value = 18
+        player = self.game.players[0]
+        self.state.current_bid_state = BidStateCallTurn(self.game)
+        self.state.current_bid_state.state_finished_handler = self.state.bid_state_finished_handler
+
+        # when
+        self.state.current_bid_state.handle_action(BidCallAction(player, value))
+
+        # then
+        self.assertTrue(isinstance(self.state.current_bid_state, BidStateResponseTurn))
+
+    def test_transitionFromCallTurnToEnd(self):
+        # given
+        value = 18
+        player = self.game.players[0]
+        self.game.passed_bid_players.append(self.game.players[1])
+        self.state.current_bid_state = BidStateCallTurn(self.game)
+        self.state.current_bid_state.state_finished_handler = self.state.bid_state_finished_handler
+
+        # when
+        self.state.current_bid_state.handle_action(BidPassAction(player, value))
+
+        # then
+        self.assertTrue(isinstance(self.state.current_bid_state, BidStateEnd))
+
+    def test_bidCall(self):
+        # given
+        value = 18
+        self.game.bid_value = -1
+        player = self.game.players[0]
+
+        # when
+        self.state.current_bid_state.bid_call(player, value)
+
+        # then
+        self.assertEquals(self.game.bid_value, value)
+
+    def test_bidCall_playerAlreadyPassedFails(self):
+        # given
+        value = 18
+        player = self.game.players[0]
+        self.game.passed_bid_players.append(player)
+
+        # when/then
+        self.assertRaises(InvalidPlayerMove, self.state.current_bid_state.bid_call, player, value)
+
+    def test_bidCall_unavailableBidValueFails(self):
+        # given
+        value = 5
+        player = self.game.players[0]
+
+        # when/then
+        self.assertRaises(InvalidPlayerMove, self.state.current_bid_state.bid_call, player, value)
+
+
+class BidStateCallResponseTest(TestCase):
+    def setUp(self):
+        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.state = GameStateBid(self.game)
+        self.state.current_bid_state = BidStateResponseTurn(self.game)
+        self.state.current_bid_state.state_finished_handler = self.state.bid_state_finished_handler
+        self.state_machine = GameStateMachine(self.state)
+
+    def test_transitionFromResponseTurnToEnd(self):
+        # given
+        value = 18
+        player = self.game.players[0]
+        self.game.bid_value = 18
+        self.game.passed_bid_players.append(self.game.players[1])
+        self.state.current_bid_state = BidStateResponseTurn(self.game)
+        self.state.current_bid_state.state_finished_handler = self.state.bid_state_finished_handler
+
+        # when
+        self.state.current_bid_state.handle_action(BidPassAction(player, value))
+
+        # then
+        self.assertTrue(isinstance(self.state.current_bid_state, BidStateEnd))
+
+    def test_transitionFromResponseTurnToCallTurn(self):
+        # given
+        value = 18
+        player = self.game.players[0]
+        self.game.bid_value = 18
+        self.state.current_bid_state = BidStateResponseTurn(self.game)
+        self.state.current_bid_state.state_finished_handler = self.state.bid_state_finished_handler
+
+        # when
+        self.state.current_bid_state.handle_action(BidAcceptAction(player, value))
+
+        # then
+        self.assertTrue(isinstance(self.state.current_bid_state, BidStateCallTurn))
+
+    def test_bidAccept(self):
+        # given
+        value = 18
+        self.game.bid_value = 18
+        player = self.game.players[0]
+
+        # when
+        self.state.current_bid_state.bid_accept(player, value)
+
+        # then nothing should happen (beside state changed)
+
+    def test_bidCall_playerAlreadyPassedFails(self):
+        # given
+        value = 18
+        player = self.game.players[0]
+        self.game.bid_value = 18
+        self.game.passed_bid_players.append(player)
+
+        # when/then
+        self.assertRaises(InvalidPlayerMove, self.state.current_bid_state.bid_accept, player, value)
+
+    def test_bidCall_unavailableBidValueFails(self):
+        # given
+        value = 18
+        self.game.bid_value = 20
+        player = self.game.players[0]
+
+        # when/then
+        self.assertRaises(InvalidPlayerMove, self.state.current_bid_state.bid_accept, player, value)

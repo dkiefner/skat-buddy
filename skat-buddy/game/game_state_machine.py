@@ -3,25 +3,25 @@ from abc import ABCMeta, abstractmethod
 
 class GameStateMachine:
     def __init__(self, initial_state):
-        self.currentState = initial_state
+        self.current_state = initial_state
         self.game = initial_state.game
-        self.currentState.state_finished_handler = self.state_finished_handler
+        self.current_state.state_finished_handler = self.state_finished_handler
 
     def handle_action(self, action):
-        self.currentState.handle_action(action)
+        self.current_state.handle_action(action)
 
     def state_finished_handler(self):
-        self.currentState = self.currentState.get_next_state()
-        self.currentState.state_finished_handler = self.state_finished_handler
+        self.current_state = self.current_state.get_next_state()
+        self.current_state.state_finished_handler = self.state_finished_handler
 
 
 # ------------------------------------------------------------
 # Abstract game state class
 # ------------------------------------------------------------
 class GameState(metaclass=ABCMeta):
-    def __init__(self, game):
+    def __init__(self, game, state_finished_handler=lambda: None):
         self.game = game
-        self.state_finished_handler = lambda: None
+        self.state_finished_handler = state_finished_handler
 
     @abstractmethod
     def get_next_state(self):
