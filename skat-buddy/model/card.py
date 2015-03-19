@@ -12,11 +12,41 @@ class Card:
         KING = 6
         ACE = 7
 
+        @staticmethod
+        def to_display(suit):
+            if suit is Card.Face.SEVEN:
+                return str(7)
+            elif suit is Card.Face.EIGHT:
+                return str(8)
+            elif suit is Card.Face.NINE:
+                return str(9)
+            elif suit is Card.Face.TEN:
+                return str(10)
+            elif suit is Card.Face.JACK:
+                return "J"
+            elif suit is Card.Face.QUEEN:
+                return "Q"
+            elif suit is Card.Face.KING:
+                return "K"
+            elif suit is Card.Face.ACE:
+                return "A"
+
     class Suit(Enum):
         BELLS = 0
         HEARTS = 1
         LEAVES = 2
         ACORNS = 3
+
+        @staticmethod
+        def to_display(suit):
+            if suit is Card.Suit.BELLS:
+                return "\u2666"
+            elif suit is Card.Suit.HEARTS:
+                return "\u2665"
+            elif suit is Card.Suit.LEAVES:
+                return "\u2660"
+            elif suit is Card.Suit.ACORNS:
+                return "\u2663"
 
     def get_value(self):
         if self.face is Card.Face.JACK:
@@ -37,7 +67,7 @@ class Card:
         self.face = face
 
     def __repr__(self):
-        return self.face.name + " " + self.suit.name
+        return Card.Face.to_display(self.face) + Card.Suit.to_display(self.suit)
 
     def __eq__(self, other):
         return self.suit is other.suit and self.face is other.face
