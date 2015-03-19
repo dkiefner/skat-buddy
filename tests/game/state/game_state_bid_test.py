@@ -22,8 +22,8 @@ class GameStateBidTest(TestCase):
         # given
         player = self.game.players[0]
         player.type = Player.Type.DECLARER
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
         skat = self.game.skat
         skat.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
         skat.append(Card(Card.Suit.HEARTS, Card.Face.EIGHT))
@@ -41,8 +41,8 @@ class GameStateBidTest(TestCase):
         # given
         player = self.game.players[0]
         player.type = Player.Type.DEFENDER
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
         skat = self.game.skat
         skat.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
         skat.append(Card(Card.Suit.HEARTS, Card.Face.EIGHT))
@@ -54,8 +54,8 @@ class GameStateBidTest(TestCase):
         # given
         player = self.game.players[0]
         player.type = Player.Type.DECLARER
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.EIGHT))
         cards_to_put = list()
@@ -77,8 +77,8 @@ class GameStateBidTest(TestCase):
         # given
         player = self.game.players[0]
         player.type = Player.Type.DECLARER
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.EIGHT))
         cards_to_put = list()
@@ -91,8 +91,8 @@ class GameStateBidTest(TestCase):
         # given
         player = self.game.players[0]
         player.type = Player.Type.DECLARER
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.EIGHT))
         cards_to_put = list()
@@ -107,8 +107,8 @@ class GameStateBidTest(TestCase):
         # given
         player = self.game.players[0]
         player.type = Player.Type.DEFENDER
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        player.cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        player.cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.SEVEN))
         player.cards.append(Card(Card.Suit.HEARTS, Card.Face.EIGHT))
         cards_to_put = list()

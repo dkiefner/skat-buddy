@@ -15,14 +15,14 @@ class GameWithThreePlayerTest(TestCase):
 
     def test_createDeck_containsAllCards(self):
         # then
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.SEVEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.EIGHT) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.NINE) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.TEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.JACK) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.QUEEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.KING) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.BELLS, Card.Face.ACE) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.DIAMOND, Card.Face.SEVEN) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.DIAMOND, Card.Face.EIGHT) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.DIAMOND, Card.Face.NINE) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.DIAMOND, Card.Face.TEN) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.DIAMOND, Card.Face.JACK) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.DIAMOND, Card.Face.QUEEN) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.DIAMOND, Card.Face.KING) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.DIAMOND, Card.Face.ACE) in self.game.card_deck)
 
         self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.SEVEN) in self.game.card_deck)
         self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.EIGHT) in self.game.card_deck)
@@ -33,23 +33,23 @@ class GameWithThreePlayerTest(TestCase):
         self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.KING) in self.game.card_deck)
         self.assertTrue(Card(Card.Suit.HEARTS, Card.Face.ACE) in self.game.card_deck)
 
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.SEVEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.EIGHT) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.NINE) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.TEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.JACK) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.QUEEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.KING) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.LEAVES, Card.Face.ACE) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.SPADE, Card.Face.SEVEN) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.SPADE, Card.Face.EIGHT) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.SPADE, Card.Face.NINE) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.SPADE, Card.Face.TEN) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.SPADE, Card.Face.JACK) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.SPADE, Card.Face.QUEEN) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.SPADE, Card.Face.KING) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.SPADE, Card.Face.ACE) in self.game.card_deck)
 
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.SEVEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.EIGHT) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.NINE) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.TEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.JACK) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.QUEEN) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.KING) in self.game.card_deck)
-        self.assertTrue(Card(Card.Suit.ACORNS, Card.Face.ACE) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.CLUB, Card.Face.SEVEN) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.CLUB, Card.Face.EIGHT) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.CLUB, Card.Face.NINE) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.CLUB, Card.Face.TEN) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.CLUB, Card.Face.JACK) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.CLUB, Card.Face.QUEEN) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.CLUB, Card.Face.KING) in self.game.card_deck)
+        self.assertTrue(Card(Card.Suit.CLUB, Card.Face.ACE) in self.game.card_deck)
 
     def test_createDeck_noDuplicateCards(self):
         # given
@@ -65,10 +65,10 @@ class GameWithThreePlayerTest(TestCase):
 
     def test_clearCards(self):
         # given
-        self.game.skat.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        self.game.players[0].cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
-        self.game.players[1].cards.append(Card(Card.Suit.BELLS, Card.Face.NINE))
-        self.game.players[2].cards.append(Card(Card.Suit.BELLS, Card.Face.TEN))
+        self.game.skat.append(Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        self.game.players[0].cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
+        self.game.players[1].cards.append(Card(Card.Suit.DIAMOND, Card.Face.NINE))
+        self.game.players[2].cards.append(Card(Card.Suit.DIAMOND, Card.Face.TEN))
 
         # when
         self.game.clear_cards()
@@ -83,10 +83,10 @@ class GameWithThreePlayerTest(TestCase):
         # given
         self.game.bid_value = 24
         self.game.dealer = 2
-        self.game.skat.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        self.game.players[0].cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
-        self.game.players[1].cards.append(Card(Card.Suit.BELLS, Card.Face.NINE))
-        self.game.players[2].cards.append(Card(Card.Suit.BELLS, Card.Face.TEN))
+        self.game.skat.append(Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        self.game.players[0].cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
+        self.game.players[1].cards.append(Card(Card.Suit.DIAMOND, Card.Face.NINE))
+        self.game.players[2].cards.append(Card(Card.Suit.DIAMOND, Card.Face.TEN))
         self.game.passed_bid_players.append(self.game.players[0])
 
         # when
@@ -111,10 +111,10 @@ class GameWithThreePlayerTest(TestCase):
         # given
         self.game.bid_value = 24
         self.game.dealer = 2
-        self.game.skat.append(Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        self.game.players[0].cards.append(Card(Card.Suit.BELLS, Card.Face.EIGHT))
-        self.game.players[1].cards.append(Card(Card.Suit.BELLS, Card.Face.NINE))
-        self.game.players[2].cards.append(Card(Card.Suit.BELLS, Card.Face.TEN))
+        self.game.skat.append(Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        self.game.players[0].cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
+        self.game.players[1].cards.append(Card(Card.Suit.DIAMOND, Card.Face.NINE))
+        self.game.players[2].cards.append(Card(Card.Suit.DIAMOND, Card.Face.TEN))
 
         # when
         self.game.reset(True)

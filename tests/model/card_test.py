@@ -9,15 +9,15 @@ class CardTest(TestCase):
 
     def test_equals(self):
         # given
-        card_a = Card(Card.Suit.BELLS, Card.Face.SEVEN)
-        card_b = Card(Card.Suit.BELLS, Card.Face.SEVEN)
+        card_a = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        card_b = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
 
         # then
         self.assertEquals(card_a, card_b)
 
     def test_notEquals_differentSuit(self):
         # given
-        card_a = Card(Card.Suit.BELLS, Card.Face.SEVEN)
+        card_a = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
         card_b = Card(Card.Suit.HEARTS, Card.Face.SEVEN)
 
         # then
@@ -25,22 +25,22 @@ class CardTest(TestCase):
 
     def test_notEquals_differentFace(self):
         # given
-        card_a = Card(Card.Suit.BELLS, Card.Face.SEVEN)
-        card_b = Card(Card.Suit.BELLS, Card.Face.EIGHT)
+        card_a = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        card_b = Card(Card.Suit.DIAMOND, Card.Face.EIGHT)
 
         # then
         self.assertNotEquals(card_a, card_b)
 
     def test_getValue_single(self):
         # then
-        self.assertEquals(Card(Card.Suit.BELLS, Card.Face.SEVEN).get_value(), 0)
-        self.assertEquals(Card(Card.Suit.BELLS, Card.Face.EIGHT).get_value(), 0)
-        self.assertEquals(Card(Card.Suit.BELLS, Card.Face.NINE).get_value(), 0)
-        self.assertEquals(Card(Card.Suit.BELLS, Card.Face.JACK).get_value(), 2)
-        self.assertEquals(Card(Card.Suit.BELLS, Card.Face.QUEEN).get_value(), 3)
-        self.assertEquals(Card(Card.Suit.BELLS, Card.Face.KING).get_value(), 4)
-        self.assertEquals(Card(Card.Suit.BELLS, Card.Face.TEN).get_value(), 10)
-        self.assertEquals(Card(Card.Suit.BELLS, Card.Face.ACE).get_value(), 11)
+        self.assertEquals(Card(Card.Suit.DIAMOND, Card.Face.SEVEN).get_value(), 0)
+        self.assertEquals(Card(Card.Suit.DIAMOND, Card.Face.EIGHT).get_value(), 0)
+        self.assertEquals(Card(Card.Suit.DIAMOND, Card.Face.NINE).get_value(), 0)
+        self.assertEquals(Card(Card.Suit.DIAMOND, Card.Face.JACK).get_value(), 2)
+        self.assertEquals(Card(Card.Suit.DIAMOND, Card.Face.QUEEN).get_value(), 3)
+        self.assertEquals(Card(Card.Suit.DIAMOND, Card.Face.KING).get_value(), 4)
+        self.assertEquals(Card(Card.Suit.DIAMOND, Card.Face.TEN).get_value(), 10)
+        self.assertEquals(Card(Card.Suit.DIAMOND, Card.Face.ACE).get_value(), 11)
 
     def test_getValue_sum(self):
         # given

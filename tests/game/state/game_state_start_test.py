@@ -20,16 +20,16 @@ class GameWithThreePlayerTest(TestCase):
 
         # then
         # round 1
-        self.assertEquals(self.game.players[0].cards[0], Card(Card.Suit.BELLS, Card.Face.SEVEN))
-        self.assertEquals(self.game.players[0].cards[1], Card(Card.Suit.BELLS, Card.Face.EIGHT))
-        self.assertEquals(self.game.players[0].cards[2], Card(Card.Suit.BELLS, Card.Face.NINE))
+        self.assertEquals(self.game.players[0].cards[0], Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        self.assertEquals(self.game.players[0].cards[1], Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
+        self.assertEquals(self.game.players[0].cards[2], Card(Card.Suit.DIAMOND, Card.Face.NINE))
 
-        self.assertEquals(self.game.players[1].cards[0], Card(Card.Suit.BELLS, Card.Face.TEN))
-        self.assertEquals(self.game.players[1].cards[1], Card(Card.Suit.BELLS, Card.Face.JACK))
-        self.assertEquals(self.game.players[1].cards[2], Card(Card.Suit.BELLS, Card.Face.QUEEN))
+        self.assertEquals(self.game.players[1].cards[0], Card(Card.Suit.DIAMOND, Card.Face.TEN))
+        self.assertEquals(self.game.players[1].cards[1], Card(Card.Suit.DIAMOND, Card.Face.JACK))
+        self.assertEquals(self.game.players[1].cards[2], Card(Card.Suit.DIAMOND, Card.Face.QUEEN))
 
-        self.assertEquals(self.game.players[2].cards[0], Card(Card.Suit.BELLS, Card.Face.KING))
-        self.assertEquals(self.game.players[2].cards[1], Card(Card.Suit.BELLS, Card.Face.ACE))
+        self.assertEquals(self.game.players[2].cards[0], Card(Card.Suit.DIAMOND, Card.Face.KING))
+        self.assertEquals(self.game.players[2].cards[1], Card(Card.Suit.DIAMOND, Card.Face.ACE))
         self.assertEquals(self.game.players[2].cards[2], Card(Card.Suit.HEARTS, Card.Face.SEVEN))
 
         self.assertEquals(self.game.skat[0], Card(Card.Suit.HEARTS, Card.Face.EIGHT))
@@ -42,27 +42,27 @@ class GameWithThreePlayerTest(TestCase):
         self.assertEquals(self.game.players[0].cards[6], Card(Card.Suit.HEARTS, Card.Face.KING))
 
         self.assertEquals(self.game.players[1].cards[3], Card(Card.Suit.HEARTS, Card.Face.ACE))
-        self.assertEquals(self.game.players[1].cards[4], Card(Card.Suit.LEAVES, Card.Face.SEVEN))
-        self.assertEquals(self.game.players[1].cards[5], Card(Card.Suit.LEAVES, Card.Face.EIGHT))
-        self.assertEquals(self.game.players[1].cards[6], Card(Card.Suit.LEAVES, Card.Face.NINE))
+        self.assertEquals(self.game.players[1].cards[4], Card(Card.Suit.SPADE, Card.Face.SEVEN))
+        self.assertEquals(self.game.players[1].cards[5], Card(Card.Suit.SPADE, Card.Face.EIGHT))
+        self.assertEquals(self.game.players[1].cards[6], Card(Card.Suit.SPADE, Card.Face.NINE))
 
-        self.assertEquals(self.game.players[2].cards[3], Card(Card.Suit.LEAVES, Card.Face.TEN))
-        self.assertEquals(self.game.players[2].cards[4], Card(Card.Suit.LEAVES, Card.Face.JACK))
-        self.assertEquals(self.game.players[2].cards[5], Card(Card.Suit.LEAVES, Card.Face.QUEEN))
-        self.assertEquals(self.game.players[2].cards[6], Card(Card.Suit.LEAVES, Card.Face.KING))
+        self.assertEquals(self.game.players[2].cards[3], Card(Card.Suit.SPADE, Card.Face.TEN))
+        self.assertEquals(self.game.players[2].cards[4], Card(Card.Suit.SPADE, Card.Face.JACK))
+        self.assertEquals(self.game.players[2].cards[5], Card(Card.Suit.SPADE, Card.Face.QUEEN))
+        self.assertEquals(self.game.players[2].cards[6], Card(Card.Suit.SPADE, Card.Face.KING))
 
         # round 3
-        self.assertEquals(self.game.players[0].cards[7], Card(Card.Suit.LEAVES, Card.Face.ACE))
-        self.assertEquals(self.game.players[0].cards[8], Card(Card.Suit.ACORNS, Card.Face.SEVEN))
-        self.assertEquals(self.game.players[0].cards[9], Card(Card.Suit.ACORNS, Card.Face.EIGHT))
+        self.assertEquals(self.game.players[0].cards[7], Card(Card.Suit.SPADE, Card.Face.ACE))
+        self.assertEquals(self.game.players[0].cards[8], Card(Card.Suit.CLUB, Card.Face.SEVEN))
+        self.assertEquals(self.game.players[0].cards[9], Card(Card.Suit.CLUB, Card.Face.EIGHT))
 
-        self.assertEquals(self.game.players[1].cards[7], Card(Card.Suit.ACORNS, Card.Face.NINE))
-        self.assertEquals(self.game.players[1].cards[8], Card(Card.Suit.ACORNS, Card.Face.TEN))
-        self.assertEquals(self.game.players[1].cards[9], Card(Card.Suit.ACORNS, Card.Face.JACK))
+        self.assertEquals(self.game.players[1].cards[7], Card(Card.Suit.CLUB, Card.Face.NINE))
+        self.assertEquals(self.game.players[1].cards[8], Card(Card.Suit.CLUB, Card.Face.TEN))
+        self.assertEquals(self.game.players[1].cards[9], Card(Card.Suit.CLUB, Card.Face.JACK))
 
-        self.assertEquals(self.game.players[2].cards[7], Card(Card.Suit.ACORNS, Card.Face.QUEEN))
-        self.assertEquals(self.game.players[2].cards[8], Card(Card.Suit.ACORNS, Card.Face.KING))
-        self.assertEquals(self.game.players[2].cards[9], Card(Card.Suit.ACORNS, Card.Face.ACE))
+        self.assertEquals(self.game.players[2].cards[7], Card(Card.Suit.CLUB, Card.Face.QUEEN))
+        self.assertEquals(self.game.players[2].cards[8], Card(Card.Suit.CLUB, Card.Face.KING))
+        self.assertEquals(self.game.players[2].cards[9], Card(Card.Suit.CLUB, Card.Face.ACE))
 
     def test_setUp(self):
         # then

@@ -32,20 +32,20 @@ class Card:
                 return "A"
 
     class Suit(Enum):
-        BELLS = 0
+        DIAMOND = 0
         HEARTS = 1
-        LEAVES = 2
-        ACORNS = 3
+        SPADE = 2
+        CLUB = 3
 
         @staticmethod
         def to_display(suit):
-            if suit is Card.Suit.BELLS:
+            if suit is Card.Suit.DIAMOND:
                 return "\u2666"
             elif suit is Card.Suit.HEARTS:
                 return "\u2665"
-            elif suit is Card.Suit.LEAVES:
+            elif suit is Card.Suit.SPADE:
                 return "\u2660"
-            elif suit is Card.Suit.ACORNS:
+            elif suit is Card.Suit.CLUB:
                 return "\u2663"
 
     def get_value(self):
