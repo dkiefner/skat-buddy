@@ -127,6 +127,20 @@ class BidStateResponseTurn(GameState):
 
 
 class BidStateEnd(GameState):
+    def __init__(self, game):
+        super().__init__(game)
+        self.set_declarer()
+
+    def set_declarer(self):
+        if self.game.get_first_seat() not in self.game.passed_bid_players:
+            declarer = self.game.get_first_seat()
+        elif self.game.get_second_seat() not in self.game.passed_bid_players:
+            declarer = self.game.get_second_seat()
+        else:
+            declarer = self.game.get_third_seat()
+
+        declarer.type = Player.Type.DECLARER
+
     def handle_action(self, action):
         super().handle_action(action)
 

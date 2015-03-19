@@ -176,6 +176,23 @@ class GameStateBidTest(TestCase):
         # when/then
         self.assertRaises(InvalidPlayerMove, self.state.check_player_has_passed, self.game, player)
 
+    def test_twoPlayerPasses(self):
+        # given
+        self.game.dealer = 0
+        declarer = self.game.get_second_seat()
+        defender1 = self.game.get_first_seat()
+        defender2 = self.game.get_third_seat()
+
+        # when
+        self.state.handle_action(BidCallAction(declarer, 18))
+        self.state.handle_action(BidPassAction(defender1, 18))
+        self.state.handle_action(BidPassAction(defender2, 18))
+
+        # then
+        self.assertEquals(declarer.type, Player.Type.DECLARER)
+        self.assertEquals(defender1.type, Player.Type.DEFENDER)
+        self.assertEquals(defender2.type, Player.Type.DEFENDER)
+
 
 class BidResponseAction(object):
     pass
@@ -310,3 +327,37 @@ class BidStateCallResponseTest(TestCase):
 
         # when/then
         self.assertRaises(InvalidPlayerMove, self.state.current_bid_state.bid_accept, player, value)
+
+
+class BidStateEndTest(TestCase):
+    def setUp(self):
+        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.state = GameStateBid(self.game)
+        self.state_machine = GameStateMachine(self.state)
+
+    def test_firstSeatIsDeclarer(self):
+        # given
+        self.game.bid_value = 18
+        self.game.passed_bid_players = [self.game.get_second_seat(), self.game.get_third_seat()]
+        self.state.current_bid_state = BidStateEnd(self.game)
+
+        # then
+        self.assertEquals(self.game.get_first_seat().type, Player.Type.DECLARER)
+
+    def test_secondSeatIsDeclarer(self):
+        # given
+        self.game.bid_value = 18
+        self.game.passed_bid_players = [self.game.get_first_seat(), self.game.get_third_seat()]
+        self.state.current_bid_state = BidStateEnd(self.game)
+
+        # then
+        self.assertEquals(self.game.get_second_seat().type, Player.Type.DECLARER)
+
+    def test_thirdSeatIsDeclarer(self):
+        # given
+        self.game.bid_value = 18
+        self.game.passed_bid_players = [self.game.get_first_seat(), self.game.get_second_seat()]
+        self.state.current_bid_state = BidStateEnd(self.game)
+
+        # then
+        self.assertEquals(self.game.get_third_seat().type, Player.Type.DECLARER)
