@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from game.game import Game
+from game.game import Game, Trick
+from game.game_variant import GameVariantGrand
 from model.player import Player
 from model.card import Card
 
@@ -69,6 +70,15 @@ class GameWithThreePlayerTest(TestCase):
         self.game.players[0].cards.append(Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
         self.game.players[1].cards.append(Card(Card.Suit.DIAMOND, Card.Face.NINE))
         self.game.players[2].cards.append(Card(Card.Suit.DIAMOND, Card.Face.TEN))
+        self.game.players[0].trick_stack = {
+            1: [Card(Card.Suit.HEARTS, Card.Face.SEVEN), Card(Card.Suit.HEARTS, Card.Face.EIGHT),
+                Card(Card.Suit.HEARTS, Card.Face.NINE)]}
+        self.game.players[1].trick_stack = {
+            1: [Card(Card.Suit.SPADE, Card.Face.SEVEN), Card(Card.Suit.SPADE, Card.Face.EIGHT),
+                Card(Card.Suit.SPADE, Card.Face.NINE)]}
+        self.game.players[2].trick_stack = {
+            1: [Card(Card.Suit.CLUB, Card.Face.SEVEN), Card(Card.Suit.CLUB, Card.Face.EIGHT),
+                Card(Card.Suit.CLUB, Card.Face.NINE)]}
 
         # when
         self.game.clear_cards()
@@ -78,6 +88,9 @@ class GameWithThreePlayerTest(TestCase):
         self.assertEquals(len(self.game.players[0].cards), 0)
         self.assertEquals(len(self.game.players[1].cards), 0)
         self.assertEquals(len(self.game.players[2].cards), 0)
+        self.assertEquals(len(self.game.players[0].trick_stack), 0)
+        self.assertEquals(len(self.game.players[1].trick_stack), 0)
+        self.assertEquals(len(self.game.players[2].trick_stack), 0)
 
     def test_reset_withoutDealer(self):
         # given
@@ -131,3 +144,179 @@ class GameWithThreePlayerTest(TestCase):
         self.assertEquals(self.game.game_variant, None)
         # reset dealer
         self.assertEquals(self.game.dealer, -1)
+
+    def test_getDeclarer(self):
+        # given
+        declarer = self.game.players[1]
+        declarer.type = Player.Type.DECLARER
+
+        # when
+        result = self.game.get_declarer()
+
+        # then
+        self.assertEquals(declarer, result)
+
+    def test_hasDeclarerWon(self):
+        # given
+        declarer = self.game.players[1]
+        declarer.type = Player.Type.DECLARER
+        declarer.trick_stack = {1: [Card(Card.Suit.DIAMOND, Card.Face.TEN), Card(Card.Suit.HEARTS, Card.Face.TEN),
+                                    Card(Card.Suit.SPADE, Card.Face.TEN)],
+                                2: [Card(Card.Suit.DIAMOND, Card.Face.ACE), Card(Card.Suit.HEARTS, Card.Face.ACE),
+                                    Card(Card.Suit.SPADE, Card.Face.ACE)]}
+
+        # when
+        result = self.game.has_declarer_won()
+
+        # then
+        self.assertTrue(result)
+
+    def test_hasDeclarerWon_False(self):
+        # given
+        declarer = self.game.players[1]
+        declarer.type = Player.Type.DECLARER
+        declarer.trick_stack = {1: [Card(Card.Suit.DIAMOND, Card.Face.TEN), Card(Card.Suit.HEARTS, Card.Face.TEN),
+                                    Card(Card.Suit.SPADE, Card.Face.TEN)]}
+
+        # when
+        result = self.game.has_declarer_won()
+
+        # then
+        self.assertFalse(result)
+
+    def test_finishTrick(self):
+        # given
+        round = 1
+        trick_winner = self.game.players[1]
+        trick_stack = {self.game.players[0]: Card(Card.Suit.DIAMOND, Card.Face.SEVEN),
+                       self.game.players[1]: Card(Card.Suit.DIAMOND, Card.Face.JACK),
+                       self.game.players[2]: Card(Card.Suit.DIAMOND, Card.Face.EIGHT)}
+        self.game.game_variant = GameVariantGrand()
+        self.game.round = round
+        self.game.trick.stack = trick_stack
+
+        # when
+        self.game.finish_trick()
+
+        # then
+        self.assertEquals(list(trick_stack.values()), list(trick_winner.trick_stack[round]))
+        self.assertEquals(next(iter(trick_stack.values())), next(iter(trick_winner.trick_stack[round])))
+        self.assertEquals(next(iter(trick_stack.values())), next(iter(trick_winner.trick_stack[round])))
+        self.assertEquals(trick_winner, self.game.trick.leader)
+
+
+class TrickTest(TestCase):
+    def setUp(self):
+        self.player1 = Player("P1")
+        self.player2 = Player("P2")
+        self.player3 = Player("P3")
+        self.trick = Trick([self.player1, self.player2, self.player3])
+        self.trick.leader = self.player1
+
+    def test_init_emptyStack(self):
+        # then
+        self.assertEquals(self.trick.stack[self.player1], None)
+        self.assertEquals(self.trick.stack[self.player2], None)
+        self.assertEquals(self.trick.stack[self.player3], None)
+
+    def test_getCurrentTurnPlayer(self):
+        # TODO
+        pass
+
+    def test_hasAlreadyPlayedCard(self):
+        # given
+        self.trick.stack[self.player1] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+
+        # when
+        result = self.trick.has_already_played_card(self.player1)
+
+        # then
+        self.assertTrue(result)
+
+    def test_hasAlreadyPlayedCard_False(self):
+        # given
+        self.trick.stack[self.player1] = None
+
+        # when
+        result = self.trick.has_already_played_card(self.player1)
+
+        # then
+        self.assertFalse(result)
+
+    def test_isValidCardMove(self):
+        # TODO
+        pass
+
+    def test_isEmpty(self):
+        # given
+        self.trick.stack[self.trick.leader] = None
+
+        # when
+        result = self.trick.is_empty()
+
+        # then
+        self.assertTrue(result)
+
+    def test_isEmpty_False(self):
+        # given
+        self.trick.stack[self.trick.leader] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+
+        # when
+        result = self.trick.is_empty()
+
+        # then
+        self.assertFalse(result)
+
+    def test_canMove(self):
+        # TODO
+        pass
+
+    def test_getWinner(self):
+        # given
+        self.trick.stack[self.player1] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        self.trick.stack[self.player2] = Card(Card.Suit.DIAMOND, Card.Face.EIGHT)
+        self.trick.stack[self.player3] = Card(Card.Suit.DIAMOND, Card.Face.NINE)
+
+        # when
+        result = self.trick.get_winner(GameVariantGrand())
+
+        # then
+        self.assertEquals(self.player3, result)
+
+    def test_isComplete(self):
+        # given
+        self.trick.stack[self.player1] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        self.trick.stack[self.player2] = Card(Card.Suit.DIAMOND, Card.Face.EIGHT)
+        self.trick.stack[self.player3] = Card(Card.Suit.DIAMOND, Card.Face.NINE)
+
+        # when
+        result = self.trick.is_complete()
+
+        # then
+        self.assertTrue(result)
+
+    def test_isComplete_False(self):
+        # given
+        self.trick.stack[self.player1] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        self.trick.stack[self.player2] = Card(Card.Suit.DIAMOND, Card.Face.EIGHT)
+        self.trick.stack[self.player3] = None
+
+        # when
+        result = self.trick.is_complete()
+
+        # then
+        self.assertFalse(result)
+
+    def test_clear(self):
+        # given
+        self.trick.stack[self.player1] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        self.trick.stack[self.player2] = Card(Card.Suit.DIAMOND, Card.Face.EIGHT)
+        self.trick.stack[self.player3] = Card(Card.Suit.DIAMOND, Card.Face.NINE)
+
+        # when
+        self.trick.clear()
+
+        # then
+        self.assertEquals(self.trick.stack[self.player1], None)
+        self.assertEquals(self.trick.stack[self.player2], None)
+        self.assertEquals(self.trick.stack[self.player3], None)

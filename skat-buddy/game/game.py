@@ -21,9 +21,9 @@ class Game:
         self.create_deck()
 
     def finish_trick(self):
-        trick_winner = self.trick.get_trick_winner(self.game_variant)
+        trick_winner = self.trick.get_winner(self.game_variant)
         # add trick to players trick_stack
-        trick_winner.trick_stack[self.round] = self.trick.stack.items()
+        trick_winner.trick_stack[self.round] = self.trick.stack.values()
         # set trick leader for next round
         self.trick.leader = trick_winner
 
@@ -45,7 +45,7 @@ class Game:
                 return player
 
     def has_declarer_won(self):
-        return self.get_declarer().sum_trick_values > 60
+        return self.get_declarer().sum_trick_values() > 60
 
     def create_deck(self):
         for suit in Card.Suit:
@@ -70,7 +70,7 @@ class Game:
 
 class Trick:
     def __init__(self, players):
-        self.stack = dict()
+        self.stack = dict()  # player: card
         self.players = players
         self.leader = None
 
@@ -82,16 +82,16 @@ class Trick:
         if self.stack[self.leader] is None:
             return self.leader
 
-        idx_trick_leader = self.players.index(self.leader)
-        second_player = self.players[(idx_trick_leader + 1) % len(self.players)]
+        idx_leader = self.players.index(self.leader)
+        second_player = self.players[(idx_leader + 1) % len(self.players)]
         if second_player in self.stack.keys() and self.stack[second_player] is None:
             return second_player
 
-        third_player = self.players[(idx_trick_leader + 2) % len(self.players)]
+        third_player = self.players[(idx_leader + 2) % len(self.players)]
         if third_player in self.stack.keys() and self.stack[third_player] is None:
             return third_player
 
-        fourth_player = self.players[(idx_trick_leader + 3) % len(self.players)]
+        fourth_player = self.players[(idx_leader + 3) % len(self.players)]
         if fourth_player in self.stack.keys() and self.stack[fourth_player] is None:
             return fourth_player
 
@@ -102,39 +102,39 @@ class Trick:
 
     def is_valid_card_move(self, game_variant, player, card):
         # first played card
-        if self.is_trick_empty():
+        if self.is_empty():
             return True
 
-        first_trick_card = self.stack[self.leader]
+        first_card = self.stack[self.leader]
         # check if player can follow by trump
-        if game_variant.is_trump(first_trick_card) and game_variant.has_trump(player):
+        if game_variant.is_trump(first_card) and game_variant.has_trump(player):
             return game_variant.is_trump(card)
         # check if player can follow by suit
-        elif player.has_suit(first_trick_card.suit):
-            return card.suit is first_trick_card.suit
+        elif player.has_suit(first_card.suit):
+            return card.suit is first_card.suit
         else:
             return True
 
-    def is_trick_empty(self):
+    def is_empty(self):
         return self.stack[self.leader] is None
 
     def can_move(self, player):
         return player is self.get_current_turn_player()
 
-    def get_trick_winner(self, game_variant):
-        highest_trick_card = game_variant.get_highest_card(self.stack.items())
+    def get_winner(self, game_variant):
+        highest_card = game_variant.get_highest_card(self.stack.values())
         # get winner for this trick
         for player, card in self.stack.items():
-            if card is highest_trick_card:
+            if card is highest_card:
                 return player
 
-    def is_trick_complete(self):
+    def is_complete(self):
         is_complete = True
         for player in self.stack.keys():
             is_complete = is_complete and self.stack[player] is not None
 
         return is_complete
 
-    def clear_trick(self):
+    def clear(self):
         for player in self.stack.keys():
             self.stack[player] = None

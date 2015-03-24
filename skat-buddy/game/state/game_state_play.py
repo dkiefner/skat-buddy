@@ -21,7 +21,7 @@ class GameStatePlay(GameState):
     def play_card(self, player, card):
         self.check_valid_card_play(player, card)
 
-        if self.game.is_trick_complete():
+        if self.game.is_complete():
             self.finish_trick()
 
     def check_valid_card_play(self, player, card):

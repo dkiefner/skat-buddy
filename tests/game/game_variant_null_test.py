@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from game.game_variant import GameVariantNull
 from model.card import Card
+from model.player import Player
 
 
 class GameVariantTest(TestCase):
@@ -124,3 +125,14 @@ class GameVariantTest(TestCase):
         # when/then
         result = self.game_variant.get_highest_card([spade_nine, hearts_eight, diamond_seven])
         self.assertEquals(Card(Card.Suit.SPADE, Card.Face.NINE), result)
+
+    def test_hasTrump(self):
+        # given
+        player = Player("Player")
+        player.cards = [Card(Card.Suit.DIAMOND, Card.Face.JACK), Card(Card.Suit.DIAMOND, Card.Face.EIGHT)]
+
+        # when
+        result = self.game_variant.has_trump(player)
+
+        # then
+        self.assertFalse(result)
