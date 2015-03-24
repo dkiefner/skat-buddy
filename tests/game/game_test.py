@@ -211,7 +211,7 @@ class TrickTest(TestCase):
         self.player2 = Player("P2")
         self.player3 = Player("P3")
         self.trick = Trick([self.player1, self.player2, self.player3])
-        self.trick.leader = self.player1
+        self.trick.leader = self.player2
 
     def test_init_emptyStack(self):
         # then
@@ -219,9 +219,41 @@ class TrickTest(TestCase):
         self.assertEquals(self.trick.stack[self.player2], None)
         self.assertEquals(self.trick.stack[self.player3], None)
 
-    def test_getCurrentTurnPlayer(self):
-        # TODO
-        pass
+    def test_getCurrentTurnPlayer_firstHand(self):
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = None
+        self.trick.stack[self.player3] = None
+
+        # when
+        result = self.trick.get_current_turn_player()
+
+        # then
+        self.assertEqual(self.player2, result)
+
+    def test_getCurrentTurnPlayer_secondHand(self):
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        self.trick.stack[self.player3] = None
+
+        # when
+        result = self.trick.get_current_turn_player()
+
+        # then
+        self.assertEqual(self.player3, result)
+
+    def test_getCurrentTurnPlayer_thirdHand(self):
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        self.trick.stack[self.player3] = Card(Card.Suit.DIAMOND, Card.Face.EIGHT)
+
+        # when
+        result = self.trick.get_current_turn_player()
+
+        # then
+        self.assertEqual(self.player1, result)
 
     def test_hasAlreadyPlayedCard(self):
         # given
@@ -243,9 +275,64 @@ class TrickTest(TestCase):
         # then
         self.assertFalse(result)
 
-    def test_isValidCardMove(self):
-        # TODO
-        pass
+    def test_isValidCardMove_firstMove(self):
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = None
+        self.trick.stack[self.player3] = None
+        game_variant = GameVariantGrand()
+        card = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+
+        # when
+        result = self.trick.is_valid_card_move(game_variant, self.player2, card)
+
+        # then
+        self.assertTrue(result)
+
+    def test_isValidCardMove_followTrump(self):
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = Card(Card.Suit.DIAMOND, Card.Face.JACK)
+        self.trick.stack[self.player3] = None
+        card = Card(Card.Suit.HEARTS, Card.Face.JACK)
+        self.player3.cards = [card]
+        game_variant = GameVariantGrand()
+
+        # when
+        result = self.trick.is_valid_card_move(game_variant, self.player3, card)
+
+        # then
+        self.assertTrue(result)
+
+    def test_isValidCardMove_followSuit(self):
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        self.trick.stack[self.player3] = None
+        card = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        self.player3.cards = [card]
+        game_variant = GameVariantGrand()
+
+        # when
+        result = self.trick.is_valid_card_move(game_variant, self.player3, card)
+
+        # then
+        self.assertTrue(result)
+
+    def test_isValidCardMove_cannotFollow(self):
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
+        self.trick.stack[self.player3] = None
+        card = Card(Card.Suit.HEARTS, Card.Face.SEVEN)
+        self.player3.cards = [card]
+        game_variant = GameVariantGrand()
+
+        # when
+        result = self.trick.is_valid_card_move(game_variant, self.player3, card)
+
+        # then
+        self.assertTrue(result)
 
     def test_isEmpty(self):
         # given
@@ -268,8 +355,30 @@ class TrickTest(TestCase):
         self.assertFalse(result)
 
     def test_canMove(self):
-        # TODO
-        pass
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = None
+        self.trick.stack[self.player3] = None
+
+        # when
+        result = self.trick.can_move(self.player2)
+
+        # then
+        self.assertTrue(result)
+
+    def test_canMove_False(self):
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = None
+        self.trick.stack[self.player3] = None
+
+        # when
+        result1 = self.trick.can_move(self.player1)
+        result2 = self.trick.can_move(self.player3)
+
+        # then
+        self.assertFalse(result1)
+        self.assertFalse(result2)
 
     def test_getWinner(self):
         # given
