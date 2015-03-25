@@ -20,8 +20,9 @@ class GameStatePlay(GameState):
 
     def play_card(self, player, card):
         self.check_valid_card_play(player, card)
+        self.game.trick.stack[player] = card
 
-        if self.game.is_complete():
+        if self.game.trick.is_complete():
             self.finish_trick()
 
     def check_valid_card_play(self, player, card):
@@ -29,13 +30,14 @@ class GameStatePlay(GameState):
         if not player.has_card(card):
             raise InvalidPlayerMove("Player " + player.name + " doesn't holding the card " + str(card) + ".")
         # check if player already played a card to current trick
-        if self.game.has_already_played_card(player):
+        if self.game.trick.has_already_played_card(player):
             raise InvalidPlayerMove("Player " + player.name + " already played a card to the trick.")
         # check if this is players turn or waiting for another player to play his card before
-        if not self.game.can_move(player):
+        if not self.game.trick.can_move(player):
             raise InvalidPlayerMove("It's not players " + player.name + " move.")
         # check if player can play this card (see follow)
-        if not self.game.is_valid_card_move(player, card):  # TODO rule that player lost for playing wrong card?
+        # TODO rule that player lost for playing wrong card?
+        if not self.game.trick.is_valid_card_move(self.game.game_variant, player, card):
             raise InvalidPlayerMove("Card " + str(card) + "is not a valid move by player " + player.name)
 
     def finish_trick(self):

@@ -70,7 +70,7 @@ class Card:
         return Card.Face.to_display(self.face) + Card.Suit.to_display(self.suit)
 
     def __eq__(self, other):
-        return self.suit is other.suit and self.face is other.face
+        return other is not None and self.suit is other.suit and self.face is other.face
 
     def __ne__(self, other):
         return not self.__eq__(other)
