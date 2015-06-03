@@ -24,6 +24,12 @@ class Game:
         trick_winner = self.trick.get_winner(self.game_variant)
         # add trick to players trick_stack
         trick_winner.trick_stack[self.round] = self.trick.stack.values()
+
+        # new trick
+        idx_leader = self.players.index(trick_winner)
+        second_player = self.players[(idx_leader + 1) % len(self.players)]
+        third_player = self.players[(idx_leader + 2) % len(self.players)]
+        self.trick = Trick([trick_winner, second_player, third_player])
         # set trick leader for next round
         self.trick.leader = trick_winner
 
@@ -45,6 +51,7 @@ class Game:
                 return player
 
     def has_declarer_won(self):
+        # TODO check overbid and bid variants like schwarz
         return self.get_declarer().sum_trick_values() > 60
 
     def create_deck(self):
@@ -70,6 +77,7 @@ class Game:
 
 class Trick:
     def __init__(self, players):
+        # TODO store in correct order of played cards
         self.stack = dict()  # player: card
         self.players = players
         self.leader = None
@@ -106,6 +114,9 @@ class Trick:
             return True
 
         first_card = self.stack[self.leader]
+        if first_card is None:
+            first_card = card
+
         # check if player can follow by trump
         if game_variant.is_trump(first_card) and game_variant.has_trump(player):
             return game_variant.is_trump(card)
@@ -116,7 +127,10 @@ class Trick:
             return True
 
     def is_empty(self):
-        return self.stack[self.leader] is None
+        for player, card in self.stack.items():
+            if card is not None:
+                return False
+        return True
 
     def can_move(self, player):
         return player is self.get_current_turn_player()

@@ -21,6 +21,7 @@ class GameStatePlay(GameState):
     def play_card(self, player, card):
         self.check_valid_card_play(player, card)
         self.game.trick.stack[player] = card
+        player.cards.remove(card)
 
         if self.game.trick.is_complete():
             self.finish_trick()
@@ -50,10 +51,9 @@ class GameStatePlay(GameState):
             self.game.round += 1
 
     def finish_game(self):
-        # TODO check overbid and bid variants like schwarz
         if self.game.has_declarer_won():
             print(str(self.game.get_declarer()) + " wins with " + str(
-                self.game.get_dealer().sum_trick_values()) + " points.")
+                self.game.get_declarer().sum_trick_values()) + " points.")
         else:
             print("Defenders won with " + str(120 - self.game.get_dealer().sum_trick_values()) + " points.")
 
