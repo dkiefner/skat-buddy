@@ -6,7 +6,8 @@ class Player:
         DECLARER = 0
         DEFENDER = 1
 
-    def __init__(self, name):
+    def __init__(self, id, name):
+        self.id = id
         self.name = name
         self.type = None
         self.cards = list()
@@ -38,4 +39,13 @@ class Player:
         return False
 
     def __repr__(self):
-        return "name=" + self.name + " cards=" + str(self.cards)
+        return "id=" + str(id) + "name=" + self.name + " cards=" + str(self.cards)
+
+    def __eq__(self, other):
+        return other is not None and self.id is other.id
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.id, self.name))

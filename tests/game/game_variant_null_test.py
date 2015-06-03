@@ -128,7 +128,7 @@ class GameVariantTest(TestCase):
 
     def test_hasTrump(self):
         # given
-        player = Player("Player")
+        player = Player(1, "Player")
         player.cards = [Card(Card.Suit.DIAMOND, Card.Face.JACK), Card(Card.Suit.DIAMOND, Card.Face.EIGHT)]
 
         # when

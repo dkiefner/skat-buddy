@@ -8,7 +8,7 @@ from model.card import Card
 
 class GameWithThreePlayerTest(TestCase):
     def setUp(self):
-        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.game = Game([Player(1, "P1"), Player(2, "P2"), Player(3, "P3")])
 
     def test_createDeck_correctSize(self):
         # then
@@ -207,9 +207,9 @@ class GameWithThreePlayerTest(TestCase):
 
 class TrickTest(TestCase):
     def setUp(self):
-        self.player1 = Player("P1")
-        self.player2 = Player("P2")
-        self.player3 = Player("P3")
+        self.player1 = Player(1, "P1")
+        self.player2 = Player(2, "P2")
+        self.player3 = Player(3, "P3")
         self.trick = Trick([self.player1, self.player2, self.player3])
         self.trick.leader = self.player2
 

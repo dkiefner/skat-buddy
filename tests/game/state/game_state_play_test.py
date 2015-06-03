@@ -11,7 +11,7 @@ from model.card import Card
 
 class GameStateBidTest(TestCase):
     def setUp(self):
-        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.game = Game([Player(1, "P1"), Player(2, "P2"), Player(3, "P3")])
         self.game.game_variant = GameVariantGrand()
         self.game.players[0].type = Player.Type.DEFENDER
         self.game.players[1].type = Player.Type.DECLARER

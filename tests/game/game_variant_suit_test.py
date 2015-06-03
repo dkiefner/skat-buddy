@@ -249,7 +249,7 @@ class GameVariantSuitTest(TestCase):
 
     def test_hasTrump_withSuit(self):
         # given
-        player = Player("Player")
+        player = Player(1, "Player")
         player.cards = [Card(Card.Suit.DIAMOND, Card.Face.SEVEN), Card(Card.Suit.CLUB, Card.Face.EIGHT)]
 
         # when
@@ -260,7 +260,7 @@ class GameVariantSuitTest(TestCase):
 
     def test_hasTrump_withJack(self):
         # given
-        player = Player("Player")
+        player = Player(1, "Player")
         player.cards = [Card(Card.Suit.DIAMOND, Card.Face.JACK), Card(Card.Suit.DIAMOND, Card.Face.EIGHT)]
 
         # when
@@ -271,7 +271,7 @@ class GameVariantSuitTest(TestCase):
 
     def test_hasTrump_withoutTrump(self):
         # given
-        player = Player("Player")
+        player = Player(1, "Player")
         player.cards = [Card(Card.Suit.DIAMOND, Card.Face.SEVEN), Card(Card.Suit.DIAMOND, Card.Face.EIGHT)]
 
         # when

@@ -7,9 +7,9 @@ from game.state.game_state_bid import BidCallAction, BidAcceptAction, BidPassAct
 from game.state.game_state_start import GameStateStart, StartGameAction
 from model.player import Player
 
-player1 = Player("Alice")
-player2 = Player("Bob")
-player3 = Player("Carol")
+player1 = Player(1, "Alice")
+player2 = Player(2, "Bob")
+player3 = Player(3, "Carol")
 game = Game([player1, player2, player3])
 state_machine = GameStateMachine(GameStateStart(game))
 
@@ -41,9 +41,9 @@ state_machine.handle_action(BidPassAction(player2, 20))
 print(player1.name + " pass on 20")
 state_machine.handle_action(BidPassAction(player1, 20))
 
-# carol is declarer
+# carol is player3
 # carol pick up skat
-print(player3.name + " is declarer")
+print(player3.name + " is player3")
 print(player3.name + " picked up skat")
 state_machine.handle_action(PickUpSkatAction(player3))
 print("\n" + player3.name + ": " + str(player3.cards))

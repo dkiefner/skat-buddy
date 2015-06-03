@@ -6,7 +6,7 @@ from model.player import Player
 
 class PlayerTest(TestCase):
     def setUp(self):
-        self.player = Player("Player")
+        self.player = Player(1, "Player")
 
     def test_sumTrickValues(self):
         # given

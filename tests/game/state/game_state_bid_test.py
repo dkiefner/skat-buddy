@@ -14,7 +14,7 @@ from model.card import Card
 # TODO check for correct action delegation with substates
 class GameStateBidTest(TestCase):
     def setUp(self):
-        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.game = Game([Player(1, "P1"), Player(2, "P2"), Player(3, "P3")])
         self.state = GameStateBid(self.game)
         self.state_machine = GameStateMachine(self.state)
 
@@ -200,7 +200,7 @@ class BidResponseAction(object):
 
 class BidStateCallTurnTest(TestCase):
     def setUp(self):
-        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.game = Game([Player(1, "P1"), Player(2, "P2"), Player(3, "P3")])
         self.state = GameStateBid(self.game)
         self.state_machine = GameStateMachine(self.state)
 
@@ -263,7 +263,7 @@ class BidStateCallTurnTest(TestCase):
 
 class BidStateCallResponseTest(TestCase):
     def setUp(self):
-        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.game = Game([Player(1, "P1"), Player(2, "P2"), Player(3, "P3")])
         self.state = GameStateBid(self.game)
         self.state.current_bid_state = BidStateResponseTurn(self.game)
         self.state.current_bid_state.state_finished_handler = self.state.bid_state_finished_handler
@@ -331,7 +331,7 @@ class BidStateCallResponseTest(TestCase):
 
 class BidStateEndTest(TestCase):
     def setUp(self):
-        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.game = Game([Player(1, "P1"), Player(2, "P2"), Player(3, "P3")])
         self.state = GameStateBid(self.game)
         self.state_machine = GameStateMachine(self.state)
 

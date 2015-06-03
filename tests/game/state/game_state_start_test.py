@@ -10,7 +10,7 @@ from model.card import Card
 
 class GameWithThreePlayerTest(TestCase):
     def setUp(self):
-        self.game = Game([Player("P1"), Player("P2"), Player("P3")])
+        self.game = Game([Player(1, "P1"), Player(2, "P2"), Player(3, "P3")])
         self.state = GameStateStart(self.game)
         self.state_machine = GameStateMachine(self.state)
 
