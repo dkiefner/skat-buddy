@@ -275,6 +275,16 @@ class TrickTest(TestCase):
         # then
         self.assertFalse(result)
 
+    # TODO test following cases with given cards
+    # j:
+    # j --> ok
+    # 8 u hat keine j --> ok
+    # 8 u hat j --> false
+    #
+    # AD:
+    # D --> ok
+    # j u hat kein D --> ok
+    # j u hat D --> false
     def test_isValidCardMove_firstMove(self):
         # given
         self.trick.stack[self.player1] = None
@@ -330,6 +340,20 @@ class TrickTest(TestCase):
 
         # when
         result = self.trick.is_valid_card_move(game_variant, self.player3, card)
+
+        # then
+        self.assertTrue(result)
+
+    def test_isValidCardMove_withoutTrumpSameSuitDifferentFaceHoldingSuit(self):
+        # given
+        self.trick.stack[self.player1] = None
+        self.trick.stack[self.player2] = Card(Card.Suit.SPADE, Card.Face.JACK)
+        self.trick.stack[self.player3] = None
+        self.player3.cards = [Card(Card.Suit.SPADE, Card.Face.EIGHT), Card(Card.Suit.DIAMOND, Card.Face.EIGHT)]
+        game_variant = GameVariantGrand()
+
+        # when
+        result = self.trick.is_valid_card_move(game_variant, self.player3, Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
 
         # then
         self.assertTrue(result)

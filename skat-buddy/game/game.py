@@ -109,8 +109,8 @@ class Trick:
         # check if player can follow by trump
         if game_variant.is_trump(first_card) and game_variant.has_trump(player):
             return game_variant.is_trump(card)
-        # check if player can follow by suit
-        elif player.has_suit(first_card.suit):
+        # check if player can follow by suit if no trump was played
+        elif not game_variant.is_trump(first_card) and player.has_suit(first_card.suit):
             return card.suit is first_card.suit
         else:
             return True
