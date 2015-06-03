@@ -11,7 +11,9 @@ from model.player import Player
 # TODO actions to make additional declarations like Schneider, Ouvert, etc.
 class GameStateBid(GameState):
     available_bid_values = [18, 20, 22, 23, 24, 27, 30, 33, 35, 36, 40, 44, 45, 46, 48, 50, 54, 55, 59, 60, 63, 66, 70,
-                            72, 77, 80, 84, 88, 90, 96]  # TODO add more
+                            72, 77, 80, 84, 88, 90, 96, 99, 100, 108, 110, 117, 120, 121, 126, 130, 132, 135, 140, 143,
+                            144, 150, 153, 154, 156, 160, 162, 165, 168, 170, 176, 180, 187, 192, 198, 204, 216, 240,
+                            264]
 
     def __init__(self, game):
         super().__init__(game)
