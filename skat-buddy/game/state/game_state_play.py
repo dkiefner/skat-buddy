@@ -20,7 +20,7 @@ class GameStatePlay(GameState):
 
     def play_card(self, player, card):
         self.check_valid_card_play(player, card)
-        self.game.trick.stack[player] = card
+        self.game.trick.add(player, card)
         player.cards.remove(card)
 
         if self.game.trick.is_complete():

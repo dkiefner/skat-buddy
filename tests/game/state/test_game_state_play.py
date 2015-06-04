@@ -33,8 +33,10 @@ class GameStateBidTest(TestCase):
         self.state.play_card(player, card)
 
         # then
-        self.assertEquals(self.game.trick.stack[player], card)
-        self.assertEquals(self.game.trick.get_current_turn_player(), self.game.players[2])
+        trick_entry = self.game.trick.stack[0]
+        self.assertEquals(trick_entry[0], player)
+        self.assertEquals(trick_entry[1], card)
+        self.assertEquals(self.game.trick.get_current_player(), self.game.players[2])
         self.assertTrue(self.game.trick.has_already_played_card(player))
         self.assertFalse(self.game.trick.is_complete())
         self.assertFalse(self.game.trick.is_empty())
@@ -45,19 +47,25 @@ class GameStateBidTest(TestCase):
         card = Card(Card.Suit.DIAMOND, Card.Face.NINE)
         player = self.game.players[0]
         player.cards = [card]
-        self.game.trick.stack[self.game.players[1]] = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
-        self.game.trick.stack[self.game.players[2]] = Card(Card.Suit.DIAMOND, Card.Face.EIGHT)
+        self.game.trick.add(self.game.players[1], Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        self.game.trick.add(self.game.players[2], Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
 
         # when
         self.state.play_card(player, card)
 
         # then
-        self.assertEquals(self.game.trick.get_current_turn_player(), player)
+        self.assertEquals(self.game.trick.get_current_player(), player)
         self.assertFalse(self.game.trick.has_already_played_card(player))
         self.assertFalse(self.game.trick.is_complete())
         self.assertTrue(self.game.trick.is_empty())
         self.assertEquals(self.game.trick.leader, player)
-        self.assertEquals([Card(Card.Suit.DIAMOND, Card.Face.SEVEN), Card(Card.Suit.DIAMOND, Card.Face.EIGHT), Card(Card.Suit.DIAMOND, Card.Face.NINE)], list(player.trick_stack[1]))
+        player_trick = player.trick_stack[1]
+        self.assertEquals(player_trick[0][0], self.game.players[1])
+        self.assertEquals(player_trick[0][1], Card(Card.Suit.DIAMOND, Card.Face.SEVEN))
+        self.assertEquals(player_trick[1][0], self.game.players[2])
+        self.assertEquals(player_trick[1][1], Card(Card.Suit.DIAMOND, Card.Face.EIGHT))
+        self.assertEquals(player_trick[2][0], player)
+        self.assertEquals(player_trick[2][1], Card(Card.Suit.DIAMOND, Card.Face.NINE))
         self.assertEquals(self.game.round, 2)
 
     def test_checkValidCard_notHoldingCardFails(self):
@@ -73,7 +81,7 @@ class GameStateBidTest(TestCase):
         card = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
         player = self.game.players[1]
         player.cards = [card]
-        self.game.trick.stack[player] = card
+        self.game.trick.add(player, card)
 
         # when/then
         self.assertRaises(InvalidPlayerMove, self.state.check_valid_card_play, player, card)
@@ -82,14 +90,14 @@ class GameStateBidTest(TestCase):
         # given
         card = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
         player = self.game.players[0]
-        self.game.trick.stack[player] = card
+        self.game.trick.add(player, card)
 
         # when/then
         self.assertRaises(InvalidPlayerMove, self.state.check_valid_card_play, player, card)
 
     def test_checkValidCard_notValidMoveFails(self):
         # given
-        self.game.trick.stack[self.game.players[1]] = Card(Card.Suit.DIAMOND, Card.Face.JACK)
+        self.game.trick.add(self.game.players[1], Card(Card.Suit.DIAMOND, Card.Face.JACK))
         card = Card(Card.Suit.DIAMOND, Card.Face.SEVEN)
         player = self.game.players[2]
         player.cards = [card, Card(Card.Suit.HEARTS, Card.Face.JACK)]
@@ -144,10 +152,38 @@ class GameStateBidTest(TestCase):
         declarer = self.game.players[1]
         defender_1 = self.game.players[0]
         defender_2 = self.game.players[2]
-        self.game.skat = [Card(Card.Suit.CLUB, Card.Face.EIGHT), Card(Card.Suit.CLUB, Card.Face.NINE)]
-        declarer.cards = [Card(Card.Suit.SPADE, Card.Face.JACK), Card(Card.Suit.CLUB, Card.Face.TEN), Card(Card.Suit.DIAMOND, Card.Face.ACE), Card(Card.Suit.HEARTS, Card.Face.JACK), Card(Card.Suit.SPADE, Card.Face.ACE), Card(Card.Suit.HEARTS, Card.Face.ACE), Card(Card.Suit.HEARTS, Card.Face.TEN), Card(Card.Suit.SPADE, Card.Face.TEN), Card(Card.Suit.DIAMOND, Card.Face.KING), Card(Card.Suit.DIAMOND, Card.Face.EIGHT)]
-        defender_1.cards = [Card(Card.Suit.CLUB, Card.Face.JACK), Card(Card.Suit.CLUB, Card.Face.KING), Card(Card.Suit.DIAMOND, Card.Face.SEVEN), Card(Card.Suit.SPADE, Card.Face.SEVEN), Card(Card.Suit.SPADE, Card.Face.EIGHT), Card(Card.Suit.HEARTS, Card.Face.EIGHT), Card(Card.Suit.HEARTS, Card.Face.KING), Card(Card.Suit.SPADE, Card.Face.KING), Card(Card.Suit.CLUB, Card.Face.SEVEN), Card(Card.Suit.CLUB, Card.Face.QUEEN)]
-        defender_2.cards = [Card(Card.Suit.DIAMOND, Card.Face.JACK), Card(Card.Suit.CLUB, Card.Face.ACE), Card(Card.Suit.DIAMOND, Card.Face.TEN), Card(Card.Suit.HEARTS, Card.Face.SEVEN), Card(Card.Suit.SPADE, Card.Face.QUEEN), Card(Card.Suit.HEARTS, Card.Face.NINE), Card(Card.Suit.HEARTS, Card.Face.QUEEN), Card(Card.Suit.SPADE, Card.Face.NINE), Card(Card.Suit.DIAMOND, Card.Face.QUEEN), Card(Card.Suit.DIAMOND, Card.Face.NINE)]
+        self.game.skat = [Card(Card.Suit.CLUB, Card.Face.EIGHT),
+                          Card(Card.Suit.CLUB, Card.Face.NINE)]
+        declarer.cards = [Card(Card.Suit.SPADE, Card.Face.JACK),
+                          Card(Card.Suit.CLUB, Card.Face.TEN),
+                          Card(Card.Suit.DIAMOND, Card.Face.ACE),
+                          Card(Card.Suit.HEARTS, Card.Face.JACK),
+                          Card(Card.Suit.SPADE, Card.Face.ACE),
+                          Card(Card.Suit.HEARTS, Card.Face.ACE),
+                          Card(Card.Suit.HEARTS, Card.Face.TEN),
+                          Card(Card.Suit.SPADE, Card.Face.TEN),
+                          Card(Card.Suit.DIAMOND, Card.Face.KING),
+                          Card(Card.Suit.DIAMOND, Card.Face.EIGHT)]
+        defender_1.cards = [Card(Card.Suit.CLUB, Card.Face.JACK),
+                            Card(Card.Suit.CLUB, Card.Face.KING),
+                            Card(Card.Suit.DIAMOND, Card.Face.SEVEN),
+                            Card(Card.Suit.SPADE, Card.Face.SEVEN),
+                            Card(Card.Suit.SPADE, Card.Face.EIGHT),
+                            Card(Card.Suit.HEARTS, Card.Face.EIGHT),
+                            Card(Card.Suit.HEARTS, Card.Face.KING),
+                            Card(Card.Suit.SPADE, Card.Face.KING),
+                            Card(Card.Suit.CLUB, Card.Face.SEVEN),
+                            Card(Card.Suit.CLUB, Card.Face.QUEEN)]
+        defender_2.cards = [Card(Card.Suit.DIAMOND, Card.Face.JACK),
+                            Card(Card.Suit.CLUB, Card.Face.ACE),
+                            Card(Card.Suit.DIAMOND, Card.Face.TEN),
+                            Card(Card.Suit.HEARTS, Card.Face.SEVEN),
+                            Card(Card.Suit.SPADE, Card.Face.QUEEN),
+                            Card(Card.Suit.HEARTS, Card.Face.NINE),
+                            Card(Card.Suit.HEARTS, Card.Face.QUEEN),
+                            Card(Card.Suit.SPADE, Card.Face.NINE),
+                            Card(Card.Suit.DIAMOND, Card.Face.QUEEN),
+                            Card(Card.Suit.DIAMOND, Card.Face.NINE)]
 
         # when
         # trick 1

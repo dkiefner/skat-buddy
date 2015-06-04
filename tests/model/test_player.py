@@ -10,13 +10,18 @@ class PlayerTest(TestCase):
 
     def test_sumTrickValues(self):
         # given
+        player2 = Player(2, "P2")
+        player3 = Player(3, "P3")
         trick_stack = dict()
-        trick_stack[1] = [Card(Card.Suit.DIAMOND, Card.Face.SEVEN), Card(Card.Suit.DIAMOND, Card.Face.EIGHT),
-                          Card(Card.Suit.DIAMOND, Card.Face.NINE)]
-        trick_stack[2] = [Card(Card.Suit.DIAMOND, Card.Face.TEN), Card(Card.Suit.DIAMOND, Card.Face.JACK),
-                          Card(Card.Suit.DIAMOND, Card.Face.QUEEN)]
-        trick_stack[3] = [Card(Card.Suit.DIAMOND, Card.Face.KING), Card(Card.Suit.DIAMOND, Card.Face.ACE),
-                          Card(Card.Suit.HEARTS, Card.Face.SEVEN)]
+        trick_stack[1] = [(self.player, Card(Card.Suit.DIAMOND, Card.Face.SEVEN)),
+                          (player2, Card(Card.Suit.DIAMOND, Card.Face.EIGHT)),
+                          (player3, Card(Card.Suit.DIAMOND, Card.Face.NINE))]
+        trick_stack[2] = [(self.player, Card(Card.Suit.DIAMOND, Card.Face.TEN)),
+                          (player2, Card(Card.Suit.DIAMOND, Card.Face.JACK)),
+                          (player3, Card(Card.Suit.DIAMOND, Card.Face.QUEEN))]
+        trick_stack[3] = [(self.player, Card(Card.Suit.DIAMOND, Card.Face.KING)),
+                          (player2, Card(Card.Suit.DIAMOND, Card.Face.ACE)),
+                          (player3, Card(Card.Suit.HEARTS, Card.Face.SEVEN))]
         self.player.trick_stack = trick_stack
 
         # when

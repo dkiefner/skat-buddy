@@ -11,14 +11,13 @@ class Player:
         self.name = name
         self.type = None
         self.cards = list()
-        # TODO store round, player and the card the player played in correct order
-        self.trick_stack = dict()  # key: trick round; value: list of cards for this trick
+        self.trick_stack = dict()  # {game_round: [(player, card), ...]}
 
     def sum_trick_values(self):
         sum_tricks = 0
         for trick in self.trick_stack.values():
-            for card in trick:
-                sum_tricks += card.get_value()
+            for entry in trick:
+                sum_tricks += entry[1].get_value()
 
         return sum_tricks
 

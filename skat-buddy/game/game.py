@@ -23,7 +23,7 @@ class Game:
     def finish_trick(self):
         trick_winner = self.trick.get_winner(self.game_variant)
         # add trick to players trick_stack
-        trick_winner.trick_stack[self.round] = self.trick.stack.values()
+        trick_winner.trick_stack[self.round] = self.trick.stack
 
         # new trick
         idx_leader = self.players.index(trick_winner)
@@ -77,46 +77,41 @@ class Game:
 
 class Trick:
     def __init__(self, players):
-        # TODO store in correct order of played cards
-        self.stack = dict()  # player: card
+        self.stack = list()  # list of tuples (player, card)
         self.players = players
         self.leader = None
 
-        for player in players:
-            self.stack[player] = None
+    def add(self, player, card):
+        self.stack.append((player, card))
 
-    # FIXME optimize
-    def get_current_turn_player(self):
-        if self.stack[self.leader] is None:
+    def get_next_player(self, player, skip=0):
+        idx_player = self.players.index(player)
+        return self.players[(idx_player + 1 + skip) % len(self.players)]
+
+    def get_current_player(self):
+        if len(self.stack) is 0:
             return self.leader
-
-        idx_leader = self.players.index(self.leader)
-        second_player = self.players[(idx_leader + 1) % len(self.players)]
-        if second_player in self.stack.keys() and self.stack[second_player] is None:
-            return second_player
-
-        third_player = self.players[(idx_leader + 2) % len(self.players)]
-        if third_player in self.stack.keys() and self.stack[third_player] is None:
-            return third_player
-
-        fourth_player = self.players[(idx_leader + 3) % len(self.players)]
-        if fourth_player in self.stack.keys() and self.stack[fourth_player] is None:
-            return fourth_player
-
-        return None
+        elif len(self.stack) is 1:
+            return self.get_next_player(self.leader)
+        else:
+            return self.get_next_player(self.leader, 1)
 
     def has_already_played_card(self, player):
-        return self.stack[player] is not None
+        if self.is_empty():
+            return False
+
+        for entry in self.stack:
+            if player is entry[0]:
+                return True
+
+        return False
 
     def is_valid_card_move(self, game_variant, player, card):
         # first played card
         if self.is_empty():
             return True
 
-        first_card = self.stack[self.leader]
-        if first_card is None:
-            first_card = card
-
+        first_card = self.stack[0][1]
         # check if player can follow by trump
         if game_variant.is_trump(first_card) and game_variant.has_trump(player):
             return game_variant.is_trump(card)
@@ -127,28 +122,21 @@ class Trick:
             return True
 
     def is_empty(self):
-        for player, card in self.stack.items():
-            if card is not None:
-                return False
-        return True
+        return len(self.stack) is 0
 
     def can_move(self, player):
-        return player is self.get_current_turn_player()
+        return player is self.get_current_player()
 
     def get_winner(self, game_variant):
-        highest_card = game_variant.get_highest_card(self.stack.values())
+        trick_map = dict()
+
+        # map all cards and players to dict {card: player}
+        for entry in self.stack:
+            trick_map[entry[1]] = entry[0]
+
+        highest_card = game_variant.get_highest_card(list(trick_map))
         # get winner for this trick
-        for player, card in self.stack.items():
-            if card is highest_card:
-                return player
+        return trick_map[highest_card]
 
     def is_complete(self):
-        is_complete = True
-        for player in self.stack.keys():
-            is_complete = is_complete and self.stack[player] is not None
-
-        return is_complete
-
-    def clear(self):
-        for player in self.stack.keys():
-            self.stack[player] = None
+        return len(self.stack) is 3
