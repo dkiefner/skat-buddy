@@ -1,4 +1,5 @@
 from game.game_state_machine import GameState, GameAction
+# from game.state.game_state_start import GameStateStart
 
 
 # ------------------------------------------------------------
@@ -16,8 +17,8 @@ class GameStateEnd(GameState):
             super().handle_action(action)
 
     def get_next_state(self):
-        # TODO
-        raise NotImplementedError()
+        pass
+        # TODO GameStateStart(self.game) throws cycle import error
 
 
 # ------------------------------------------------------------
